@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tennis Plus — Prüfungsvorbereitung SoSe 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CINEMATIC LIQUID GLASS — Tennis Plus (075348) SoSe 2026
+   Uni Münster · Binnenbruck / Brunert
+   ============================================================ */
+:root{
+  --bg:#000;
+  --txt:#fff;
+  --muted:rgba(255,255,255,.62);
+  --faint:rgba(255,255,255,.38);
+  --accent:#c8e600;          /* gedimmtes Optic Yellow */
+  --accent-soft:rgba(200,230,0,.14);
+  --ok:#4ade80;
+  --bad:#f87171;
+  --warn:#fbbf24;
+  --r-card:1.25rem;
+  --r-pill:9999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#000}                 /* Gotcha: body transparent, sonst übermalt der body die fixed BG-Layer */
+body{
+  background:transparent;
+  color:var(--txt);
+  font-family:'Barlow',system-ui,sans-serif;
+  font-weight:300;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.head{font-family:'Archivo',system-ui,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.01em;line-height:1.02}
+a{color:var(--accent);text-decoration:none}
+
+/* ---------- Hintergrund-Layer (Crossfade) ---------- */
+#pageBgA,#pageBgB{
+  position:fixed; inset:0; z-index:0;
+  background-size:cover; background-position:center;
+  opacity:0; transition:opacity .9s ease;
+  pointer-events:none;
+}
+#pageBgFallback{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(120% 90% at 50% -10%, rgba(200,230,0,.07), transparent 55%),
+             radial-gradient(90% 70% at 90% 100%, rgba(255,255,255,.05), transparent 60%),
+             linear-gradient(180deg,#0a0c07,#000 60%);
+  transition:background .9s ease;
+}
+#scrim{
+  position:fixed; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(180deg, rgba(0,0,0,.32), rgba(0,0,0,.52) 45%, rgba(0,0,0,.70));
+}
+#app{position:relative; z-index:2}
+
+/* ---------- Liquid Glass ---------- */
+.liquid-glass{
+  background:rgba(255,255,255,0.055);
+  background-blend-mode:luminosity;
+  backdrop-filter:blur(14px) saturate(150%);
+  -webkit-backdrop-filter:blur(14px) saturate(150%);
+  box-shadow:0 10px 34px rgba(0,0,0,.45), inset 0 1px 1px rgba(255,255,255,0.2);
+  position:relative; overflow:hidden; border:none;
+}
+.liquid-glass::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1.4px;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.65) 0%, rgba(255,255,255,.25) 20%,
+    rgba(255,255,255,.06) 40%, rgba(255,255,255,.06) 60%,
+    rgba(255,255,255,.25) 80%, rgba(255,255,255,.65) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+}
+.liquid-glass-strong{
+  background:rgba(255,255,255,0.09);
+  backdrop-filter:blur(40px) saturate(170%);
+  -webkit-backdrop-filter:blur(40px) saturate(170%);
+}
+.liquid-glass-strong::before{
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.75) 0%, rgba(255,255,255,.30) 20%,
+    rgba(255,255,255,.08) 40%, rgba(255,255,255,.08) 60%,
+    rgba(255,255,255,.30) 80%, rgba(255,255,255,.75) 100%);
+}
+/* Cursor-Glow */
+.liquid-glass::after{
+  content:''; position:absolute; inset:0; border-radius:inherit;
+  pointer-events:none; opacity:0; transition:opacity .35s;
+  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),
+    rgba(255,255,255,.16), rgba(255,255,255,.055) 40%, transparent 68%);
+}
+.liquid-glass:hover::after{opacity:1}
+
+/* ---------- Navigation ---------- */
+nav{
+  position:fixed; top:14px; left:50%; transform:translateX(-50%);
+  z-index:50; display:flex; align-items:center; gap:6px;
+  padding:7px 8px; border-radius:var(--r-pill); max-width:min(1180px,calc(100vw - 24px));
+}
+.logo{
+  width:32px;height:32px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 32% 30%, #eaff4d, #9bb300);
+  box-shadow:0 0 16px rgba(200,230,0,.45), inset 0 -3px 6px rgba(0,0,0,.35);
+  position:relative;
+}
+.logo::after{content:'';position:absolute;inset:4px;border-radius:50%;
+  border:1.2px solid rgba(255,255,255,.55);border-left-color:transparent;border-right-color:transparent;transform:rotate(28deg)}
+.navlinks{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.navlinks::-webkit-scrollbar{display:none}
+.navbtn{
+  font-family:'Archivo',sans-serif;font-weight:600;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--muted); background:transparent;border:0;cursor:pointer;
+  padding:8px 12px;border-radius:var(--r-pill);white-space:nowrap;transition:.25s;
+}
+.navbtn:hover{color:#fff;background:rgba(255,255,255,.08)}
+.navbtn.active{color:#000;background:var(--accent);font-weight:700}
+.cta{
+  font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;
+  background:#fff;color:#000;border:0;cursor:pointer;padding:9px 15px;border-radius:var(--r-pill);
+  white-space:nowrap;transition:.25s;flex:0 0 auto;
+}
+.cta:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,255,255,.25)}
+
+/* ---------- Layout ---------- */
+.module{display:none;padding-bottom:90px}
+.module.active{display:block}
+.wrap{max-width:1120px;margin:0 auto;padding:0 22px}
+.mod-header{
+  width:100vw;margin-left:calc(50% - 50vw);min-height:38vh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:130px 0 34px;
+}
+.mod-header .wrap{width:100%}
+.kicker{
+  font-family:'Archivo',sans-serif;font-weight:600;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:12px;text-shadow:0 2px 10px rgba(0,0,0,.6);
+}
+.mod-header h1{font-size:clamp(2.4rem,6.4vw,5rem);text-shadow:0 6px 34px rgba(0,0,0,.75)}
+.lede{font-size:1.05rem;color:rgba(255,255,255,.82);max-width:64ch;margin-top:14px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+
+section.blk{margin-top:44px}
+h2.sec{font-size:clamp(1.3rem,2.6vw,1.85rem);margin-bottom:6px}
+.sub{color:var(--muted);font-size:.95rem;margin-bottom:18px;max-width:72ch}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(178px,1fr))}
+
+.card{border-radius:var(--r-card);padding:22px}
+.card h3{font-size:1rem;margin-bottom:8px;letter-spacing:.03em}
+.card h4{font-family:'Barlow',sans-serif;font-weight:600;text-transform:none;letter-spacing:0;font-size:.95rem;margin-bottom:6px}
+.card p{color:rgba(255,255,255,.78);font-size:.92rem}
+.card ul{list-style:none;margin-top:8px}
+.card li{color:rgba(255,255,255,.78);font-size:.9rem;padding-left:16px;position:relative;margin-bottom:5px}
+.card li::before{content:'';position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.85}
+.num{font-family:'Archivo',sans-serif;font-weight:900;font-size:2.3rem;color:var(--accent);line-height:1;display:block;margin-bottom:6px}
+.num-sm{font-family:'Archivo',sans-serif;font-weight:900;font-size:1.55rem;color:#fff;line-height:1;display:block}
+
+.chip{
+  display:inline-flex;align-items:center;gap:6px;border-radius:var(--r-pill);
+  padding:5px 12px;font-size:.72rem;font-weight:500;color:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.07);margin:0 6px 6px 0;
+}
+.chip.acc{background:var(--accent-soft);color:var(--accent)}
+
+.beleg{
+  margin-top:14px;font-size:.74rem;color:var(--faint);
+  border-left:2px solid var(--accent);padding-left:10px;line-height:1.45;
+}
+.beleg b{color:rgba(200,230,0,.75);font-weight:500}
+
+.callout{border-radius:var(--r-card);padding:20px 22px;margin-top:18px;border-left:3px solid var(--accent)}
+.callout.warnbox{border-left-color:var(--warn)}
+.callout.warnbox h3{color:var(--warn)}
+
+/* Tabellen */
+.tblwrap{border-radius:var(--r-card);padding:6px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.86rem;min-width:600px}
+th{
+  font-family:'Archivo',sans-serif;font-weight:700;text-transform:uppercase;font-size:.68rem;letter-spacing:.1em;
+  color:var(--accent);text-align:left;padding:13px 12px;border-bottom:1px solid rgba(255,255,255,.14);
+}
+td{padding:11px 12px;color:rgba(255,255,255,.8);border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+tr:last-child td{border-bottom:0}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:rgba(255,255,255,.045)}
+td.date{color:#fff;font-weight:500;white-space:nowrap}
+tr.free td{color:var(--warn);font-style:italic}
+tr.exam td{color:var(--accent)}
+
+/* Reveal-Karten */
+.reveal{cursor:pointer;border-radius:var(--r-card);padding:20px}
+.reveal .answer{max-height:0;overflow:hidden;opacity:0;transition:max-height .45s ease,opacity .35s ease,margin .35s}
+.reveal.open .answer{max-height:640px;opacity:1;margin-top:12px}
+.reveal .tag{font-size:.68rem;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;font-family:'Archivo',sans-serif;font-weight:600}
+.reveal.open .tag::after{content:' ✓'}
+
+/* Flip-Karten */
+.flip{perspective:1000px;height:132px;cursor:pointer}
+.flip-in{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+.flip-f,.flip-b{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:var(--r-card);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:14px;
+}
+.flip-f p{font-size:.86rem;color:rgba(255,255,255,.85)}
+.flip-b{transform:rotateY(180deg);background:rgba(200,230,0,.1)}
+.flip-b .num-sm{color:var(--accent);font-size:1.7rem;margin-bottom:4px}
+.flip-b small{color:rgba(255,255,255,.65);font-size:.72rem;display:block;margin-top:4px}
+
+/* Buttons */
+.btn{
+  font-family:'Archivo',sans-serif;font-weight:600;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:#fff;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  padding:10px 18px;border-radius:var(--r-pill);cursor:pointer;transition:.22s;
+}
+.btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.btn.acc{background:var(--accent);color:#000;border-color:transparent;font-weight:700}
+.btn.acc:hover{box-shadow:0 6px 22px rgba(200,230,0,.3)}
+.btn.sm{padding:7px 13px;font-size:.66rem}
+.btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+
+.pager{display:flex;justify-content:space-between;gap:12px;margin-top:56px;padding-top:26px;border-top:1px solid rgba(255,255,255,.1)}
+
+/* Hero */
+.hero{
+  position:relative;width:100vw;margin-left:calc(50% - 50vw);
+  height:min(84vh,760px);overflow:hidden;display:flex;align-items:flex-end;
+}
+#heroImg{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120%;height:100%;object-fit:cover;object-position:top}
+#heroCv{position:absolute;inset:0;width:100%;height:100%}
+.hero-fallback{
+  position:absolute;inset:0;
+  background:radial-gradient(75% 60% at 50% 8%, rgba(200,230,0,.10), transparent 60%),
+             linear-gradient(180deg,#0d1005,#000);
+}
+.hero-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.15) 35%,rgba(0,0,0,.86) 100%);pointer-events:none}
+.hero-in{position:relative;z-index:3;width:100%;padding-bottom:44px}
+.hero h1{font-size:clamp(2.6rem,8.2vw,6.4rem);text-shadow:0 8px 40px rgba(0,0,0,.8)}
+.hero h1 .w{display:inline-block}
+.hero .accent{color:var(--accent)}
+.hero-sub{color:rgba(255,255,255,.85);font-size:1.05rem;margin-top:14px;max-width:56ch;text-shadow:0 2px 14px rgba(0,0,0,.7)}
+.hero-hint{position:absolute;right:22px;bottom:20px;z-index:3;font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;font-family:'Archivo',sans-serif}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:-34px;position:relative;z-index:5}
+.stat{border-radius:var(--r-card);padding:18px}
+.stat .num{font-size:1.9rem}
+.stat span.lbl{font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-family:'Archivo',sans-serif;font-weight:600}
+
+/* Court SVG */
+.courtbox{border-radius:var(--r-card);padding:18px}
+#courtSvg{width:100%;height:auto;display:block;touch-action:manipulation}
+#courtSvg .hit{cursor:pointer;transition:opacity .2s}
+#courtSvg .zone{fill:rgba(200,230,0,0);transition:fill .25s}
+#courtSvg .zone:hover{fill:rgba(200,230,0,.18)}
+#courtSvg .zone.sel{fill:rgba(200,230,0,.3)}
+#courtSvg .lineHit{stroke:transparent;stroke-width:9;cursor:pointer}
+#courtSvg .lineHit:hover{stroke:rgba(200,230,0,.5)}
+#courtSvg .lineHit.sel{stroke:var(--accent)}
+#courtInfo{border-radius:var(--r-card);padding:22px;min-height:190px}
+#courtInfo .num{font-size:1.9rem}
+
+/* Signal-/Call-Karten mit Lernmodus */
+.callcard{border-radius:var(--r-card);padding:18px;text-align:center;cursor:pointer}
+.callcard svg{width:100%;height:96px;margin-bottom:10px}
+.callcard h4{font-family:'Archivo',sans-serif;text-transform:uppercase;font-size:.82rem;letter-spacing:.05em;margin-bottom:6px;transition:filter .3s}
+.callcard p{font-size:.82rem}
+body.lernmodus .callcard h4{filter:blur(7px)}
+body.lernmodus .callcard.shown h4{filter:none}
+
+/* Animations-Bühne */
+.stage{border-radius:var(--r-card);padding:16px}
+.stage svg{width:100%;height:auto;display:block;background:rgba(0,0,0,.28);border-radius:14px}
+.steps{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.step{font-size:.86rem;color:rgba(255,255,255,.78);padding:7px 12px;border-radius:var(--r-pill);transition:.25s;background:rgba(255,255,255,.03);cursor:default}
+.step:hover{background:var(--accent-soft);color:#fff}
+.step b{color:var(--accent);font-weight:700;margin-right:6px}
+
+/* Technik-Strichzeichnung */
+.techfig{display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.28);border-radius:14px;padding:12px;min-height:330px}
+.techfig img{max-height:330px;max-width:100%;width:auto;object-fit:contain;
+  filter:drop-shadow(0 0 26px rgba(200,230,0,.18)) drop-shadow(0 8px 20px rgba(0,0,0,.5))}
+
+/* Taktik-Treppe */
+#taktikSvg .stair{cursor:pointer}
+#taktikSvg .stair rect{transition:fill .25s}
+#taktikSvg .stair:hover rect{fill:rgba(200,230,0,.28)}
+
+/* Quiz */
+.qbar{height:4px;background:rgba(255,255,255,.1);border-radius:9999px;overflow:hidden;margin-bottom:22px}
+.qbar i{display:block;height:100%;background:var(--accent);width:0;transition:width .4s}
+.qopt{
+  display:block;width:100%;text-align:left;border-radius:var(--r-pill);
+  padding:14px 20px;margin-bottom:9px;cursor:pointer;font-size:.94rem;
+  color:rgba(255,255,255,.9);transition:.2s;font-family:'Barlow',sans-serif;
+}
+.qopt:hover:not(:disabled){background:rgba(255,255,255,.12)}
+.qopt:disabled{cursor:default}
+.qopt.right{background:rgba(74,222,128,.2)!important;color:#bbf7d0}
+.qopt.wrong{background:rgba(248,113,113,.2)!important;color:#fecaca}
+.qfeed{margin-top:14px;padding:16px 18px;border-radius:var(--r-card);font-size:.9rem;display:none}
+.qfeed.show{display:block}
+.qfeed.ok{background:rgba(74,222,128,.12);border-left:3px solid var(--ok)}
+.qfeed.no{background:rgba(248,113,113,.12);border-left:3px solid var(--bad)}
+
+/* Original-Grafiken aus den Seminarunterlagen */
+.gfx{border-radius:var(--r-card);padding:12px;cursor:zoom-in}
+.gfx img{width:100%;height:auto;display:block;border-radius:12px;background:#fff}
+.gfx figcaption{font-size:.76rem;color:var(--muted);margin-top:10px;padding:0 4px 2px;line-height:1.4}
+.gfx figcaption b{color:var(--accent);font-weight:600}
+.rk{width:42px;height:42px;object-fit:contain;flex:0 0 auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.rk-lg{width:100%;max-width:120px;height:96px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.55))}
+td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;white-space:nowrap}
+.reveal .rvhead{display:flex;align-items:center;gap:12px}
+.reveal .rvhead img{width:52px;height:52px;object-fit:contain;flex:0 0 auto}
+
+/* Lightbox */
+#lb{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:34px;cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:96vw;max-height:82vh;border-radius:14px;box-shadow:0 30px 90px rgba(0,0,0,.7);background:#fff}
+#lb .cap{position:absolute;bottom:16px;left:0;right:0;text-align:center;color:var(--muted);font-size:.82rem;padding:0 20px}
+#lb .x{position:absolute;top:18px;right:22px;font-size:1.6rem;color:#fff;opacity:.7}
+
+/* Entrance */
+.anim{opacity:0;filter:blur(10px);transform:translateY(18px)}
+.anim.in{opacity:1;filter:blur(0);transform:none;transition:opacity .7s ease-out,filter .7s ease-out,transform .7s ease-out}
+
+@media(max-width:760px){
+  nav{top:8px;padding:6px;gap:4px}
+  .navbtn{padding:7px 9px;font-size:.62rem}
+  .cta{padding:8px 12px;font-size:.62rem}
+  .mod-header{padding-top:110px;min-height:30vh}
+  .hero{height:min(72vh,620px)}
+}
+</style>
+</head>
+<body>
+
+<div id="pageBgFallback"></div>
+<div id="pageBgA"></div>
+<div id="pageBgB"></div>
+<div id="scrim"></div>
+
+<nav class="liquid-glass-strong liquid-glass">
+  <div class="logo"></div>
+  <div class="navlinks" id="navlinks"></div>
+  <button class="cta" onclick="go('quiz')">Quiz starten</button>
+</nav>
+
+<div id="lb" onclick="closeLb()"><span class="x">✕</span><img id="lbImg" alt=""><div class="cap" id="lbCap"></div></div>
+
+<div id="app">
+<!-- ================= START ================= -->
+<section class="module active" id="start">
+  <div class="hero">
+    <div class="hero-fallback"></div>
+    <img id="heroImg" src="img/hero-leer.jpg" alt="">
+    <canvas id="heroCv"></canvas>
+    <div class="hero-grad"></div>
+    <div class="hero-in">
+      <div class="wrap">
+        <div class="kicker">Universität Münster · Institut für Sportwissenschaft · 075348</div>
+        <h1 id="heroHead"><span class="w">Tennis</span> <span class="w accent">Plus</span></h1>
+        <p class="hero-sub">Prüfungsvorbereitung SoSe 2026. Aufgebaut entlang des Veranstaltungsplans von Binnenbruck &amp; Brunert — vom ersten Ballkontakt bis zur Klausur Rückschlag.</p>
+      </div>
+    </div>
+    <div class="hero-hint">Maus über das Bild bewegen</div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat liquid-glass anim"><span class="num">60</span><span class="lbl">Min Klausur</span></div>
+      <div class="stat liquid-glass anim"><span class="num">10</span><span class="lbl">Stufen Schlagfolge</span></div>
+      <div class="stat liquid-glass anim"><span class="num">7</span><span class="lbl">Rückschlagspiele</span></div>
+      <div class="stat liquid-glass anim"><span class="num">4</span><span class="lbl">Taktische Ziele</span></div>
+      <div class="stat liquid-glass anim"><span class="num">2</span><span class="lbl">LP Studienleistung</span></div>
+    </div>
+
+    <section class="blk">
+      <h2 class="sec">Der Lernpfad</h2>
+      <p class="sub">Acht Module, aufgebaut entlang der Themen des Semesters. Von links nach rechts durcharbeiten — oder direkt dahin springen, wo es weh tut.</p>
+      <div class="grid g4" id="lernpfad"></div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Prüfungsstruktur</h2>
+      <p class="sub">Zwei getrennte Baustellen: Studienleistung (2 LP, unbenotet) und Prüfungsleistung (separate Anmeldung, benotet).</p>
+      <div class="grid g2">
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Studienleistung · 2 LP</span>
+          <h3>Unbenotet, aber Pflicht</h3>
+          <ul>
+            <li><b>80 % Anwesenheit</b> — i. d. R. wird zweimaliges Fehlen entschuldigt</li>
+            <li><b>Stundengestaltung</b> im Team, termingerecht, mit Skript nach wissenschaftlichen Standards</li>
+            <li><b>3-Minuten-Video:</b> Spielfähigkeit im Tennis + zwei tennisähnlichen Spielen (je 1 Minute) — Vorhand, Rückhand, Volley, ggf. Aufschlag regel- und sachgerecht</li>
+            <li><b>Spielfähigkeit im Doppel</b> — Tennis, Padel, Pickleball</li>
+            <li>Theoretisches Grundwissen · Materialgrundausstattung</li>
+          </ul>
+          <div class="beleg"><b>Beleg:</b> Veranstaltungsplan SoSe 2026, Abschnitt „Studien- und Prüfungsleistungen".</div>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Prüfungsleistung · benotet</span>
+          <h3>Klausur + Schlagfolge</h3>
+          <ul>
+            <li><b>Schriftliche Klausur, 60 Minuten</b> („Klausur Rückschlag", 31.07.26)</li>
+            <li><b>Benotete Demonstration einer Schlagfolge</b> auf dem regulären Tennisplatz mit selbstgewählter Partner*in</li>
+            <li><b>Pro Stufe sechs fehlerfreie Schläge bei drei Versuchen</b></li>
+          </ul>
+          <div class="beleg"><b>Beleg:</b> Veranstaltungsplan SoSe 2026, Prüfungsleistung.</div>
+        </div>
+      </div>
+
+      <div class="callout liquid-glass anim">
+        <h3 class="head" style="font-size:.95rem;margin-bottom:12px">Die 10 Stufen der Schlagfolge</h3>
+        <div class="grid g4">
+          <div><span class="num-sm">1</span><p style="font-size:.85rem;color:var(--muted)">beliebig</p></div>
+          <div><span class="num-sm">2</span><p style="font-size:.85rem;color:var(--muted)">Vorhand cross</p></div>
+          <div><span class="num-sm">3</span><p style="font-size:.85rem;color:var(--muted)">Rückhand cross</p></div>
+          <div><span class="num-sm">4/5</span><p style="font-size:.85rem;color:var(--muted)">Longline: VH mit RH, RH mit VH</p></div>
+          <div><span class="num-sm">6/7</span><p style="font-size:.85rem;color:var(--muted)">Hosenträger cross bzw. longline</p></div>
+          <div><span class="num-sm">8/9</span><p style="font-size:.85rem;color:var(--muted)">Volley und Hinterfeld (mind. je 2× VH und RH)</p></div>
+          <div><span class="num-sm">10</span><p style="font-size:.85rem;color:var(--muted)">Aufschlag + Return auf Sicherheit, dritter Ball als Winner, Punkt ausspielen (Tiebreak)</p></div>
+        </div>
+        <div class="beleg"><b>Beleg:</b> Veranstaltungsplan SoSe 2026, Prüfungsleistung (wörtliche Stufenliste).</div>
+      </div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Vorgaben für die Stundengestaltung</h2>
+      <p class="sub">Der Raster, nach dem jede Teamstunde bewertet wird — und nach dem in der Klausur nach didaktisch-methodischen Konsequenzen gefragt werden kann.</p>
+      <div class="grid g3">
+        <div class="card liquid-glass anim">
+          <span class="num">15–20</span><span class="lbl" style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Min Theorie</span>
+          <p style="margin-top:10px">Hintergründe &amp; Einordnung: Welche Gedanken liegen dem Stundenthema zugrunde? Welche Anwendungsbereiche? Welche didaktisch-methodischen Konsequenzen?</p>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="num">60–70</span><span class="lbl" style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Min Praxis</span>
+          <p style="margin-top:10px">Sportartspezifische Erwärmung, aufeinander aufbauende Übungs- und Spielformen mit Variationen, am Ende ein attraktives Zielspiel mit Taktik, klaren Regeln und Spaß.</p>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="num">5–10</span><span class="lbl" style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Min Reflexion</span>
+          <p style="margin-top:10px">Teilnehmende aktiv einbeziehen, Feedback einholen, Veränderungsideen erfragen und ausprobieren.</p>
+        </div>
+      </div>
+      <div class="callout liquid-glass warnbox anim">
+        <h3 class="head" style="font-size:.9rem">Merksatz für die Methodik</h3>
+        <p style="margin-top:8px;color:rgba(255,255,255,.8)">Im Zeitraffer methodische Schritte vollziehen: <b>vom Leichten zum Schweren, vom Einfachen zum Komplexen, vom Bekannten zum Unbekannten, vom Langsamen zum Schnellen.</b> Und: Plagiate werden beim Studiendekan und Prüfungsamt angezeigt.</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Veranstaltungsplan SoSe 2026, „Vorgaben und Hilfen zur Durchführung der Veranstaltungsteile"; Vorgaben-Blätter zu den Einzelthemen (13.05., 03.06.).</div>
+    </section>
+
+    <div class="pager"><span></span><button class="btn acc" onclick="go('spiele')">Weiter: Die Rückschlagspiele →</button></div>
+  </div>
+</section>
+
+<!-- ================= SPIELE ================= -->
+<section class="module" id="spiele">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 1 · Termine 22.04. · 29.04. · 24.06.</div>
+    <h1>Die Familie der<br>Rückschlagspiele</h1>
+    <p class="lede">Sieben Spiele, ein Prinzip: Ball über eine Trennlinie, Ziel ist der Fehler des Gegners. Die Klausur heißt nicht umsonst „Klausur Rückschlag" — die Feldmaße und Zählweisen sind der klassische Zahlen-Drill.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Die Übersicht — das Kernblatt</h2>
+      <p class="sub">Diese Tabelle ist das Skelett. Feldmaß, Ball, Teamstärke, Zählweise — die vier Spalten, nach denen gefragt wird.</p>
+      <div class="tblwrap liquid-glass anim">
+        <table>
+          <thead><tr><th>Spiel &amp; Schläger</th><th>Spielfeld</th><th>Ball</th><th>Teamstärke</th><th>Regelwerk / Zählweise</th></tr></thead>
+          <tbody>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-tennis.png" alt="Tennisschläger">Tennis</td><td>Normalfeld <b>23,77 × 10,97 m</b><br>Midcourt 18,00 × 8,23 m<br>Kleinfeld 10,97 × 5,48 m</td><td>Schaumstoff, rot / orange / grün / gelb; Tennisball</td><td>Einzel · Doppel</td><td>2 Sätze bis 15 Punkte; 2 Gewinnsätze beginnend bei 2:2, 3. Satz Match-Tie-Break</td></tr>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-padel.png" alt="Padelschläger">Padel</td><td><b>20 × 10 m</b>, ohne Doppelkanal</td><td>Padelball</td><td>Doppel</td><td>Zählweise wie beim Tennis im Doppel</td></tr>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-pickleball.png" alt="Pickleball-Paddle">Pickleball</td><td><b>13,4 × 6 m</b>, ohne Doppelkanal</td><td>Pickleball (Plastik, gelocht)</td><td>Doppel</td><td>Gewinnsätze bis 11 Punkte (mind. 2 Punkte Abstand)</td></tr>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-touchtennis.png" alt="Touchtennis-Schläger">Touchtennis</td><td><b>12 × 6 m</b>, mit Doppelkanal (Einzel 5 m breit)</td><td>Touchball / Schaumstoffball, gelb, Ø 8 cm</td><td>Doppel</td><td>2 kurze Sätze bis 4 Spiele; Tie-Break bis 5 Punkte bei 4:4</td></tr>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-streetracket.png" alt="Street-Racket-Schläger">Streetracket</td><td><b>3 × (2 × 2 m)</b></td><td>Streetracket-Ball</td><td>Einzel · Doppel</td><td>Immer nach oben spielen, kein Volley, bis 11 Punkte</td></tr>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-tamburello.png" alt="Tamburello">Tamburello</td><td>Indoor <b>34 × 16 m</b><br>Beach 24 × 11 m<br>Kleinfeld 9,45 × 4,10 m</td><td>Soft- / Tennisball</td><td>1:1 · 2:2 · 3:3 · 5:5</td><td>Gewinnsätze bis 21 Punkte (bei 2:2)</td></tr>
+            <tr><td class="spiel"><img class="rk" src="img/gfx/schlaeger-speckbrett.png" alt="Speckbrett">Speckbrett</td><td>Tennisplatz <b>23,77 × 10,97 m</b> (keine T-Linie)</td><td>Tennisball</td><td>Doppel</td><td>Gewinnsätze bis 21 Punkte</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="beleg"><b>Beleg:</b> „Übersicht Rückschlagspiele", Institut für Sportwissenschaft, Fachpraktisches Seminar Tennis Plus (Binnenbruck/Brunert). Ergänzt durch die Team-Protokolle vom 29.04.2026.</div>
+      <div class="callout liquid-glass warnbox anim">
+        <h3 class="head" style="font-size:.9rem">Abweichung zum internationalen Standard</h3>
+        <p style="margin-top:8px;color:rgba(255,255,255,.8)">Die Seminar-Übersicht rundet: Pickleball offiziell <b>13,41 × 6,10 m</b> (44 × 20 ft), Küche 2,13 m (7 ft) vom Netz (USA Pickleball, Section 2). Padel offiziell exakt <b>20 × 10 m</b> (FIP) — hier deckungsgleich. <b>In der Klausur gilt die Seminar-Version.</b> Die offiziellen Werte kennst du zur Sicherheit trotzdem.</p>
+      </div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Steckbriefe — klick zum Aufdecken</h2>
+      <p class="sub">Die prüfungsrelevanten Sonderregeln pro Spiel. Erst raten, dann aufdecken.</p>
+      <div class="grid g2" id="steckbriefe"></div>
+      <div class="beleg"><b>Beleg:</b> Team-Protokoll 29.04.2026 (Pickleball, Touchtennis, Speckbrett); Ablauf Tamburello/Streetracket 24.06.2026; Street Racket Basic Concept; Binnenbruck, A. (2017): „Wolf im Schafspelz — der Tamburello-Schläger"; speckbrettliga.de/statuten, touchtennis.de.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Warum diese Spiele in die Schule gehören</h2>
+      <div class="grid g3">
+        <div class="card liquid-glass anim"><h3>Zugänglichkeit</h3><p>Speckbrett: 27 kostenlose Plätze in Münster, Holzschläger, Tennisball. Streetracket: drei Kreidequadrate reichen. Kein Verein, keine Platzgebühr.</p></div>
+        <div class="card liquid-glass anim"><h3>Sofortiger Erfolg</h3><p>Pickleball und Touchtennis reduzieren Flugkurve und Tempo — Ballwechsel gelingen ab der ersten Minute. Das ist der entscheidende didaktische Hebel gegenüber „echtem" Tennis.</p></div>
+        <div class="card liquid-glass anim"><h3>Der Wolf im Schafspelz</h3><p>Tamburello: kreisrund, Ø 24–28 cm, engmaschige Nylonmembran, kein Schaft — Griff direkt am Rahmen, Daumen liegt auf der Bespannung. Hoher Aufforderungscharakter, aber unberechenbare Eigendynamik.</p></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Binnenbruck, A. (2017). Wolf im Schafspelz: der Tamburello-Schläger; Team-Protokoll 29.04.2026 („Eignung / eigene Meinung"); Input Heidelberger Ballschule SoSe 2025.</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('start')">← Zurück</button><button class="btn acc" onclick="go('regeln')">Weiter: Regeln &amp; Court →</button></div>
+  </div>
+</section>
+
+<!-- ================= REGELN ================= -->
+<section class="module" id="regeln">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 2 · Termin 22.04. · Regelwerk ITF</div>
+    <h1>Der Court<br>und die Regel</h1>
+    <p class="lede">Klick auf eine Linie, eine Zone oder das Netz — Maß, Regel und Beleg erscheinen rechts. Maßstabsgetreu nach den ITF Rules of Tennis.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Interaktiver Tennisplatz</h2>
+      <p class="sub">Alle Maße in Metern. Das Doppelfeld ist das äußere Rechteck, das Einzelfeld schließt die Doppelkanäle aus.</p>
+      <div class="grid" style="grid-template-columns:1.55fr 1fr;gap:16px" id="courtGrid">
+        <div class="courtbox liquid-glass anim">
+          <svg id="courtSvg" viewBox="0 0 420 700" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+        <div id="courtInfo" class="liquid-glass anim">
+          <div class="kicker" style="margin-bottom:8px">Auswahl</div>
+          <h3 class="head" style="font-size:1.05rem">Klick auf den Platz</h3>
+          <p style="color:var(--muted);font-size:.9rem;margin-top:10px">Linien, Zonen und Netz sind anklickbar. Jede Auswahl liefert Maß, Regel und Belegstelle.</p>
+        </div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> ITF Rules of Tennis, Rule 1 „The Court" (23,77 m × 8,23 m Einzel / 10,97 m Doppel; Netz 0,914 m Mitte, 1,07 m an den Pfosten; Aufschlaglinie 6,40 m vom Netz). Kleinfeld-/Midcourt-Maße: Übersicht Rückschlagspiele (Binnenbruck/Brunert).</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Zählweise</h2>
+      <div class="grid g4">
+        <div class="card liquid-glass anim"><span class="num">15</span><p>Erster Punkt.</p></div>
+        <div class="card liquid-glass anim"><span class="num">30</span><p>Zweiter Punkt.</p></div>
+        <div class="card liquid-glass anim"><span class="num">40</span><p>Dritter Punkt. Bei 40:40 → <b>Einstand</b> (Deuce), danach Vorteil.</p></div>
+        <div class="card liquid-glass anim"><span class="num">6</span><p>Spiele für den Satz, mit zwei Spielen Vorsprung. Bei 6:6 → <b>Tiebreak</b> bis 7 (2 Punkte Vorsprung).</p></div>
+      </div>
+      <div class="callout liquid-glass anim">
+        <h3 class="head" style="font-size:.9rem">Die Seminar-Version</h3>
+        <p style="margin-top:8px;color:rgba(255,255,255,.8)">Im Seminar wird verkürzt gespielt: <b>2 Sätze bis 15 Punkte</b> bzw. <b>2 Gewinnsätze beginnend bei 2:2</b>, im dritten Satz <b>Match-Tie-Break</b>. In der Klausur zählt diese Version — die ITF-Zählweise ist der Hintergrund.</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> ITF Rules of Tennis, Rules 5–7 (Score in a Game / Tie-break Game / Score in a Set); Übersicht Rückschlagspiele (Seminar-Zählweise).</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Calls &amp; Verstöße</h2>
+      <p class="sub">Die Ansagen, die du als Sportlehrer*in beherrschen musst — jede Karte mit eigener Strichfigur. <b>Lernmodus</b> blurrt die Namen: erst erklären, dann aufdecken.</p>
+      <div class="btnrow">
+        <button class="btn acc sm" id="lernBtn" onclick="toggleLern()">Lernmodus an</button>
+        <button class="btn sm" onclick="revealAllCalls()">Alle aufdecken</button>
+      </div>
+      <div class="grid g3" id="calls" style="margin-top:16px"></div>
+      <div class="beleg"><b>Beleg:</b> ITF Rules of Tennis — Rule 9 (Service Fault), Rule 18 (Foot Fault), Rule 22 (Ball touches a Line), Rule 24 (Player Loses Point), „Let" (Rules 22/23). Alle Grafiken selbst gezeichnet.</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('spiele')">← Zurück</button><button class="btn acc" onclick="go('vermittlung')">Weiter: Vermittlungskonzepte →</button></div>
+  </div>
+</section>
+<!-- ================= VERMITTLUNG ================= -->
+<section class="module" id="vermittlung">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 3 · Termine 15.04. · 06.05.</div>
+    <h1>Vermittlungs-<br>konzepte</h1>
+    <p class="lede">Die erste Unterscheidung, die in der Klausur sitzen muss: <b>tennisspezifische</b> gegen <b>unspezifische (integrative)</b> Vermittlung. Fünf Konzepte, fünf Logiken.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Die Vermittlungskonzepte-Tabelle</h2>
+      <p class="sub">Das zentrale Übersichtsblatt des Seminars, 1:1 übernommen. Links die drei <b>tennisspezifischen</b> Konzepte, rechts die zwei <b>sportspielübergreifenden</b>. Diese Tabelle ist die wahrscheinlichste Klausurfrage im Vermittlungsteil.</p>
+      <div class="tblwrap liquid-glass anim">
+        <table class="vk">
+          <thead>
+            <tr>
+              <th colspan="3" style="text-align:center;border-bottom:1px solid rgba(200,230,0,.35)">Tennis — Vermittlungskonzepte</th>
+              <th colspan="2" style="text-align:center;border-bottom:1px solid rgba(255,255,255,.25);color:#fff">Sportspielvermittlungskonzepte</th>
+            </tr>
+            <tr>
+              <th>DTB-Kinderkonzept</th>
+              <th>Ballschule Tennis</th>
+              <th>Münsteraner Modell<br><span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint)">Altersspezialisten</span></th>
+              <th style="color:#fff">LTAD<br><span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint)">Long Term Athlete Development</span></th>
+              <th style="color:#fff">Taktik-Spiel-Modell<br><span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint)">Tactical Games Approach</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <b style="color:#7dd3fc">BLAU</b><br>Bewegungsgrundlagen<br>Bewegungsgeschichten<br>Ballgeschicklichkeit<br>Racketspiele<br>Koordinations- &amp; Teamspiele<br><br>
+                <b style="color:#f87171">ROT</b><br>Spaß am Tennis<br>Ballgewöhnung &amp; Ballkontrolle<br>Spielverständnis<br>Basisschlagtechniken<br>Koordination &amp; Motorik<br><br>
+                <b style="color:#fb923c">ORANGE</b><br>Spielspaß &amp; Teamgeist<br>Bewegung &amp; Beinarbeit<br>Taktisches Verständnis<br>Technische Fertigkeiten<br><br>
+                <b style="color:#4ade80">GRÜN</b><br>Kondition &amp; Athletik<br>Technische Fertigkeiten<br>Taktische Fähigkeiten<br>Mentale Stärke<br>Wettkampferfahrung
+              </td>
+              <td>
+                <b>A — Koordinative Basiskompetenzen</b><br><i>sportspielübergreifend</i><br>
+                <span style="color:var(--faint)">Beispiele:</span><br>Druckvariationen<br>Präzision<br>Koordination<br><br>
+                <b>B — Perzeptiv-motorische Basiskompetenzen</b><br><i>tennisgerichtet</i><br>
+                <span style="color:var(--faint)">Beispiel:</span><br>Flugbahn des Balles erkennen<br><br>
+                <b>C — Technisch-taktische Basiskompetenzen</b><br><i>tennisspezifisch</i><br>
+                <span style="color:var(--faint)">Beispiele:</span><br>Spieleröffnung<br>Grundlinienspiel<br>Angriffs-/Netzspiel
+              </td>
+              <td>
+                <b>Tennis ist WEISS</b> — Animateur<br><span style="color:var(--faint)">3–5 Jahre</span><br><br>
+                <b>Tennis ist BLAU</b> — Schneider<br><span style="color:var(--faint)">5–6 Jahre</span><br><br>
+                <b>Tennis ist ROT</b> — Architekt<br><span style="color:var(--faint)">6–8 Jahre</span><br><br>
+                <b>Tennis ist ORANGE</b> — Konditor<br><span style="color:var(--faint)">8–10 Jahre</span><br>
+                <span style="font-size:.82em">Fundamentales anhand von Bewegungsgrundformen; Aufschlag/Return in Spieleröffnungssituationen; Grundschläge in Grundliniensituationen; Netzspiel in Netz- und Angriffssituationen; Taktik anhand von Wenn-Dann-Situationen; Turnierformen</span><br><br>
+                <b>Tennis ist GRÜN</b> — Goldschmied<br><span style="color:var(--faint)">10–11 Jahre</span><br>
+                <span style="font-size:.82em">Spielsituationen: Aufschlag/Return, Grundlinienspiel, Netzspiel, Einzel- und Doppeltaktik, Turnierformen</span><br><br>
+                <b>Tennis ist GELB</b> — Begleiter / Entwicklungscoach<br><span style="color:var(--faint)">ab 12–18+ Jahre</span><br>
+                <span style="font-size:.82em">Spieltraining anhand von Spielsituationen</span>
+              </td>
+              <td>
+                <b>A Grundlagen</b><br>Spaß an spannenden Aufgabenerfahrungen<br><br>
+                <b>B Trainieren lernen</b><br>Vielfältige Erfahrungen, um den Spielgedanken zu erleben<br><br>
+                <b>C Training zum Trainieren</b><br>Universelle Grundlagen erarbeiten<br><br>
+                <b>D Training, um an Wettkämpfen teilzunehmen</b><br>Individual-taktische Perfektion einsetzen<br><br>
+                <b>E Training, um zu gewinnen</b><br>Sportart erfolgsorientiert spielen
+              </td>
+              <td>
+                <span style="color:var(--faint)">ebenso auch<br>Kasseler Vermittlungsmodell</span><br><br>
+                <b style="color:var(--accent)">1. Ballwechsel in Gang halten</b><br><br>
+                <b style="color:var(--accent)">2. Gegnerische Punktgewinne vermeiden</b><br><br>
+                <b style="color:var(--accent)">3. Gegner unter Druck setzen</b><br><br>
+                <b style="color:var(--accent)">4. Eigene Punkte erzielen</b><br><br>
+                <b>„Was" vor „Wie"</b><br><br>
+                <b>Spielintelligenz in 4 Phasen</b><br>
+                Wahrnehmung / Antizipation<br><i>Was passiert hier?</i><br>
+                Verstehen und Interpretieren, Beurteilung<br>
+                Entscheidungsfindung<br><i>Was muss ich tun?</i><br>
+                Technische Ausführung, Bewertung, Verhaltenssteuerung<br><i>Wie mache ich es?</i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Brunert, W. (2026). „Tennis – Vermittlungskonzepte Teil 2" (Seminarblatt, © 2026 WBrunert), Learnweb Tennis Plus SoSe 2026. Inhalt 1:1 übernommen.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die Originalgrafiken der Ballschule</h2>
+      <p class="sub">Klick auf eine Grafik, um sie groß zu sehen.</p>
+      <div class="grid g3" id="gfxBallschule"></div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die Konzepte im Detail</h2>
+      <p class="sub">Dieselben Inhalte, aber sortiert nach dem, was du in der Klausur reproduzieren musst.</p>
+      <div class="grid g2">
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Tennisspezifisch</span>
+          <h3>DTB-Kinderkonzept</h3>
+          <p style="margin-bottom:10px">Vier Farbstufen, aufsteigende Komplexität:</p>
+          <ul>
+            <li><b>Blau</b> — Bewegungsgrundlagen, Bewegungsgeschichten, Ballgeschicklichkeit, Racketspiele, Koordinations- &amp; Teamspiele</li>
+            <li><b>Rot</b> — Spaß am Tennis, Ballgewöhnung &amp; Ballkontrolle, Spielverständnis, Basisschlagtechniken, Koordination &amp; Motorik</li>
+            <li><b>Orange</b> — Spielspaß &amp; Teamgeist, Bewegung &amp; Beinarbeit, taktisches Verständnis, technische Fertigkeiten</li>
+            <li><b>Grün</b> — Kondition &amp; Athletik, technische Fertigkeiten, taktische Fähigkeiten, mentale Stärke, Wettkampferfahrung</li>
+          </ul>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Tennisspezifisch</span>
+          <h3>Ballschule Tennis (Roth et al.)</h3>
+          <p style="margin-bottom:10px">Drei Ebenen von Basiskompetenzen — <b>A → B → C</b>:</p>
+          <ul>
+            <li><b>A — Koordinative Basiskompetenzen</b>, sportspielübergreifend: Druckvariationen (Zeit-, Präzisions-, Variabilitäts-, Komplexitäts-, Organisationsdruck), Präzision, Koordination</li>
+            <li><b>B — Perzeptiv-motorische Basiskompetenzen</b>, tennisgerichtet: z. B. Flugbahn des Balles erkennen</li>
+            <li><b>C — Technisch-taktische Basiskompetenzen</b>, tennisspezifisch: Spieleröffnung, Grundlinienspiel, Angriffs-/Netzspiel</li>
+          </ul>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Tennisspezifisch</span>
+          <h3>Münsteraner Modell — Altersspezialisten</h3>
+          <p style="margin-bottom:10px">Jede Stufe hat eine Trainer-Rolle:</p>
+          <ul>
+            <li><b>Tennis ist WEISS</b> — Animateur · 3–5 Jahre</li>
+            <li><b>Tennis ist BLAU</b> — Schneider · 5–6 Jahre</li>
+            <li><b>Tennis ist ROT</b> — Architekt · 6–8 Jahre</li>
+            <li><b>Tennis ist ORANGE</b> — Konditor · 8–10 Jahre</li>
+            <li><b>Tennis ist GRÜN</b> — Goldschmied · 10–11 Jahre</li>
+            <li><b>Tennis ist GELB</b> — Begleiter / Entwicklungscoach · ab 12–18+ Jahre</li>
+          </ul>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="chip">Sportspielübergreifend</span>
+          <h3>LTAD — Long Term Athlete Development</h3>
+          <ul>
+            <li><b>A Grundlagen</b> — Spaß an spannenden Aufgabenerfahrungen</li>
+            <li><b>B Trainieren lernen</b> — vielfältige Erfahrungen, um den Spielgedanken zu erleben</li>
+            <li><b>C Training zum Trainieren</b> — universelle Grundlagen erarbeiten</li>
+            <li><b>D Training, um an Wettkämpfen teilzunehmen</b> — individual-taktische Perfektion einsetzen</li>
+            <li><b>E Training, um zu gewinnen</b> — Sportart erfolgsorientiert spielen</li>
+          </ul>
+        </div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Brunert, W. (2026): „Tennis – Vermittlungskonzepte Teil 2" (Seminarblatt, © 2026 WBrunert); Zusammenfassung Stunde 06.05.2026; Roth, C., Ebert, M. &amp; Roth, K. (2022). <i>Ballschule Tennis</i>. Hofmann.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Das Taktik-Spiel-Modell — der rote Faden</h2>
+      <p class="sub">Integrative / sportspielgerichtete Vermittlung. Vertreter: Heidelberger Ballschule, Teaching Games for Understanding (TGfU), Kasseler Vermittlungsmodell. Die vier taktischen Handlungsziele sind exakt die vier Praxistermine 13.05. bis 10.06.</p>
+      <div class="grid g4">
+        <div class="card liquid-glass anim" style="cursor:pointer" onclick="go('taktik')"><span class="num">1</span><h4>Den Ballwechsel in Gang halten</h4><p style="font-size:.82rem">13.05.</p></div>
+        <div class="card liquid-glass anim" style="cursor:pointer" onclick="go('taktik')"><span class="num">2</span><h4>Gegnerische Punktgewinne vermeiden</h4><p style="font-size:.82rem">20.05.</p></div>
+        <div class="card liquid-glass anim" style="cursor:pointer" onclick="go('taktik')"><span class="num">3</span><h4>Den Gegner unter Druck setzen</h4><p style="font-size:.82rem">03.06.</p></div>
+        <div class="card liquid-glass anim" style="cursor:pointer" onclick="go('taktik')"><span class="num">4</span><h4>Eigene Punkte erzielen</h4><p style="font-size:.82rem">10.06.</p></div>
+      </div>
+      <div class="callout liquid-glass anim">
+        <h3 class="head" style="font-size:.9rem">„Was" vor „Wie"</h3>
+        <p style="margin-top:8px;color:rgba(255,255,255,.8)">Das Kernargument des Ansatzes: Erst die Spielsituation verstehen (<i>Was passiert hier? Was muss ich tun?</i>), dann die Technik (<i>Wie mache ich es?</i>). Technik ist Mittel, nicht Zweck.</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> „Input integrative Sportspielvermittlung", Binnenbruck/Brunert, Tennis Plus; Vermittlungskonzepte Teil 2 (Spalte Taktik-Spiel-Modell / Tactical Games Approach).</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Spielintelligenz in 4 Phasen (Wein)</h2>
+      <div class="grid g4">
+        <div class="card liquid-glass anim"><span class="chip acc">1</span><h3>Wahrnehmung</h3><p>Antizipation. <i>Was passiert hier?</i></p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">2</span><h3>Verstehen</h3><p>Interpretieren, beurteilen.</p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">3</span><h3>Entscheidung</h3><p><i>Was muss ich tun?</i></p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">4</span><h3>Ausführung</h3><p>Technische Ausführung, Bewertung, Verhaltenssteuerung. <i>Wie mache ich es?</i></p></div>
+      </div>
+      <div class="callout liquid-glass anim">
+        <p style="color:rgba(255,255,255,.8)"><b>Zur Vollständigkeit:</b> Spielkompetenzmodell (u. a. Memmert) — Spielform · Wahrnehmen · Entscheiden · Umsetzen. Stichwort <b>S-Ü-S</b> bzw. <b>S-S-S</b> (Spielen–Üben–Spielen / Spielen–Spielen–Spielen).</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Input integrative Sportspielvermittlung (Wein, H.: Spielintelligenzmodell; Memmert, D.: Spielkompetenzmodell).</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Prinzipien der Heidelberger Ballschule</h2>
+      <div class="grid g4">
+        <div class="card liquid-glass anim"><h3>Entwicklungs&shy;gemäßheit</h3><p>„Kinder sind keine verkleinerten Erwachsenen."</p></div>
+        <div class="card liquid-glass anim"><h3>Vielseitigkeit</h3><p>„Kinder sind Allrounder und keine Spezialisten."</p></div>
+        <div class="card liquid-glass anim"><h3>Freudbetontheit</h3><p>„Spielen macht den Meister."</p></div>
+        <div class="card liquid-glass anim"><h3>Spielerisch-un&shy;angeleitetes Lernen</h3><p>„Probieren geht über Studieren."</p></div>
+      </div>
+      <div class="callout liquid-glass anim">
+        <p style="color:rgba(255,255,255,.8)"><b>Einordnung:</b> Zielschussspiele → Wurfspiele · Torschussspiele · Rückschlagspiele Einzel · Rückschlagspiele Mannschaft. Die Rückschlagspiele Einzel wiederum: Tennis, Padel, Pickleball, Touchtennis, Speckbrett, Streetracket, FamilyTennis, Tamburello, Badminton, Tischtennis.</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> „Input Heidelberger Ballschule", Binnenbruck/Brunert, Tennis Plus.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Schulpraxis — die typischen Klausurfragen</h2>
+      <p class="sub">Aus der Zusammenfassung der Stunde vom 06.05.2026. Klick zum Aufdecken.</p>
+      <div class="grid g2" id="schulfragen"></div>
+      <div class="beleg"><b>Beleg:</b> „Zusammenfassung der Tennisstunde am 06.05.2026" (Team 4, Quizfragen inkl. Musterantworten).</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('regeln')">← Zurück</button><button class="btn acc" onclick="go('taktik')">Weiter: Taktik →</button></div>
+  </div>
+</section>
+
+<!-- ================= TAKTIK ================= -->
+<section class="module" id="taktik">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 4 · Termine 13.05. · 20.05. · 03.06. · 10.06.</div>
+    <h1>Taktik —<br>die vier Ziele</h1>
+    <p class="lede">Das Herzstück des Semesters. Vier aufeinander aufbauende Handlungsziele, jedes mit eigenem Termin, eigenem Skript, eigener Technik. Klick auf ein Ziel — die Animation zeigt das Muster.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Die Treppe</h2>
+      <p class="sub">Stufenförmiger Aufbau nach dem DTB-Lehrplan: Sicherheit → Platzierung → Druck → Abschluss. Wer Stufe 4 spielt, ohne Stufe 1 zu können, verliert.</p>
+      <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px">
+        <div class="stage liquid-glass anim">
+          <svg id="taktikSvg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="btnrow">
+            <button class="btn acc sm" id="tk1" onclick="playTaktik(0)">1 · Ballwechsel halten</button>
+            <button class="btn sm" id="tk2" onclick="playTaktik(1)">2 · Punkte vermeiden</button>
+            <button class="btn sm" id="tk3" onclick="playTaktik(2)">3 · Druck setzen</button>
+            <button class="btn sm" id="tk4" onclick="playTaktik(3)">4 · Punkte erzielen</button>
+          </div>
+          <p style="font-size:.76rem;color:var(--faint);margin-top:10px">Stufe anklicken — auch direkt in der Grafik.</p>
+        </div>
+        <div class="card liquid-glass anim" id="taktikInfo"></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Deutscher Tennis Bund (2001). <i>Tennis-Lehrplan Band 1: Technik &amp; Taktik</i>, S. 11 (stufenförmiges Taktikmodell); Input integrative Sportspielvermittlung (vier taktische Handlungsziele); Team-Skripte 13.05. / 20.05. / 03.06. / 10.06.2026.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die 5 taktischen Prinzipien</h2>
+      <p class="sub">Prinzip 1 ist die wichtigste Zahl des Semesters: <b>ca. 70 % der Punkte fallen durch unnötige Fehler</b> — nicht durch Winner.</p>
+      <div class="grid g3">
+        <div class="card liquid-glass anim"><span class="num">1</span><h3>Eigene Fehler vermeiden</h3><p>ca. <b>70 % unnötige Fehler</b>. Wer den Ball einmal öfter über das Netz bringt als der Gegner, gewinnt den Punkt.</p></div>
+        <div class="card liquid-glass anim"><span class="num">2</span><h3>Eigene Stärken einsetzen</h3><p>(2a) Stärken nutzen — (2b) und damit gleichzeitig eigene Schwächen umgehen.</p></div>
+        <div class="card liquid-glass anim"><span class="num">3</span><h3>Gegnerische Stärke meiden</h3><p>(3a) Stärke des Gegners umgehen — (3b) seine Schwächen ausnutzen.</p></div>
+        <div class="card liquid-glass anim"><span class="num">4</span><h3>Gegner zu Fehlern zwingen</h3><p>(4a) Fehler erzwingen — (4b) Gegner in der Defensive halten.</p></div>
+        <div class="card liquid-glass anim"><span class="num">5</span><h3>Geometrie &amp; Zonen</h3><p>Berücksichtigung der Geometrie und der Zonen des Tennisplatzes → Winkelhalbierende.</p></div>
+        <div class="card liquid-glass anim" style="background:rgba(200,230,0,.08)"><h3 style="color:var(--accent)">Maßnahmen zu Prinzip 4</h3><ul><li>Schwäche vermehrt anspielen (auch: einmal die Stärke, dann in die offene Seite)</li><li>Zeitdruck: schnelle Schläge, frühes Treffen im Aufsteigen, Netzangriffe, Stoppball</li><li>In Bewegung bringen: in die freie Ecke</li><li>Aus dem Gleichgewicht: gegen die Laufrichtung („gegen den Fuß")</li><li>Variabel spielen: Kombinationen</li></ul></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Team-Skript „Gegnerische Punktgewinne vermeiden", 20.05.2026 (Taktische Prinzipien 1–5); Schönborn, R. (2012), S. 27–28 (Taktik-Definition); Born, P., Grambow, R. &amp; Meffert, D. (2025). <i>Tennis — das Praxisbuch</i>. Springer Spektrum.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die 5 Phasen der taktischen Handlung</h2>
+      <div class="grid g3" id="phasen"></div>
+      <div class="beleg"><b>Beleg:</b> Team-Skript „Gegnerische Punktgewinne vermeiden", 20.05.2026, Abschnitt „Übersicht".</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Das Ampelprinzip</h2>
+      <p class="sub">Rot–Gelb–Grün: In welcher Situation bin ich, und was ist dort taktisch klug? Der häufigste Anfängerfehler: aus <b>Rot</b> heraus einen Winner versuchen.</p>
+      <div class="grid g3">
+        <div class="card liquid-glass anim" style="border-left:3px solid var(--bad)">
+          <span class="chip" style="background:rgba(248,113,113,.18);color:#fecaca">Rot · Verteidigung</span>
+          <h3>Not</h3>
+          <p>Unter Druck, weit hinter der Grundlinie. Devise: Ball <b>irgendwie sicher</b> zurück ins Spiel. Klug ist ein hoher, langer Ball (z. B. cross), um Zeit zu gewinnen und zurück in Position zu kommen.</p>
+          <p style="margin-top:8px;color:var(--bad)"><b>Fehlerquelle:</b> Anfänger versuchen aus der Defensive den harten Winner — Risiko viel zu hoch.</p>
+        </div>
+        <div class="card liquid-glass anim" style="border-left:3px solid var(--warn)">
+          <span class="chip" style="background:rgba(251,191,36,.18);color:#fde68a">Gelb · Aufbau</span>
+          <h3>Neutral</h3>
+          <p>Der Ballwechsel plätschert kontrolliert hin und her. Ziel: den Gegner durch clevere Platzierung bewegen (Winkel öffnen) und sich eine grüne Situation <b>erarbeiten</b>.</p>
+        </div>
+        <div class="card liquid-glass anim" style="border-left:3px solid var(--ok)">
+          <span class="chip" style="background:rgba(74,222,128,.18);color:#bbf7d0">Grün · Angriff</span>
+          <h3>Abschluss</h3>
+          <p>Der Gegner hat kurz oder schwach gespielt. Jetzt aufrücken und den Punkt offensiv abschließen — Winner oder Netzangriff.</p>
+        </div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Bühler, J. (Red.), Stentenbach, K., Linder, B. &amp; Dillschneider, P. (2012). <i>Player Development — Grundlagen Taktik und Technik</i>. Swiss Tennis, Spitzensport, S. 3–4. Zitiert im Team-Skript 10.06.2026.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Winkelhalbierende — die Geometrie</h2>
+      <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px">
+        <div class="stage liquid-glass anim">
+          <svg id="winkelSvg" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="btnrow"><button class="btn acc sm" onclick="playWinkel()">Abspielen</button></div>
+        </div>
+        <div class="card liquid-glass anim">
+          <h3>Nicht zur Mitte zurücklaufen</h3>
+          <p>Viele Spieler laufen nach jedem Schlag automatisch aufs Mittelzeichen zurück. <b>Das ist mathematisch falsch.</b></p>
+          <p style="margin-top:10px">Der Gegner hat aus seiner Ecke zwei extreme Optionen: <b>longline</b> oder maximal <b>cross</b>. Du musst dich auf der Linie positionieren, die den Winkel zwischen diesen beiden Flugbahnen <b>halbiert</b>.</p>
+          <p style="margin-top:10px">Spielst du selbst Vorhand longline, verschiebt sich die Winkelhalbierende deutlich — du musst ein gutes Stück <b>über das Mittelzeichen hinaus</b> laufen, um beide Antworten auf kürzestem Weg zu erreichen.</p>
+        </div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Deutscher Tennis Bund (2001). <i>Tennis-Lehrplan Band 1</i>, S. 55 (Winkelhalbierende / Stellungsspiel). Team-Skript 10.06.2026.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Winner · Forced Error · Unforced Error</h2>
+      <div class="grid g3">
+        <div class="card liquid-glass anim" style="border-left:3px solid var(--ok)"><h3>Winner</h3><p>Der Gegner <b>erreicht den Ball nicht mehr</b>. Direkter Gewinnschlag.</p></div>
+        <div class="card liquid-glass anim" style="border-left:3px solid var(--accent)"><h3>Forced Error</h3><p>Der Gegner macht <b>wegen des erzeugten Drucks</b> einen Fehler. Der eigentliche Punktemotor.</p></div>
+        <div class="card liquid-glass anim" style="border-left:3px solid var(--bad)"><h3>Unforced Error</h3><p>Leichter Fehler <b>ohne Druck</b>. Das sind die ~70 % aus Prinzip 1.</p></div>
+      </div>
+      <div class="callout liquid-glass anim">
+        <p style="color:rgba(255,255,255,.85);font-size:1.02rem;font-style:italic">„Tennis ist Langstrecke. Du kannst nicht immer mit Tempo 220 über die Autobahn rasen, du musst lernen, dass manchmal 110 reichen."</p>
+        <p style="margin-top:8px;color:var(--faint);font-size:.8rem">Bühler et al., 2012, S. 5</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Team-Skript 10.06.2026 „Eigene Punkte erzielen durch Aufschlag, Return, Winkelspiele und Forced Errors"; Bühler et al. (2012), S. 3–5.</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('vermittlung')">← Zurück</button><button class="btn acc" onclick="go('technik')">Weiter: Technik →</button></div>
+  </div>
+</section>
+
+<!-- ================= TECHNIK ================= -->
+<section class="module" id="technik">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 5 · Termine 13.05. (VH/RH) · 03.06. (Aufschlag/Volley)</div>
+    <h1>Technik &amp;<br>Fehlerbilder</h1>
+    <p class="lede">Vier Grundschläge, je Knotenpunkte, typische Fehlerbilder und ein methodischer Vermittlungsweg. Die Animation läuft in Zeitlupe durch die Phasen.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <div class="grid" style="grid-template-columns:1.1fr 1fr;gap:16px">
+        <div class="stage liquid-glass anim">
+          <div class="techfig"><img id="techImg" src="img/tech-vorhand.png" alt="Vorhand"></div>
+          <div class="btnrow">
+            <button class="btn acc sm" id="tc0" onclick="selTech(0)">Vorhand</button>
+            <button class="btn sm" id="tc1" onclick="selTech(1)">Rückhand</button>
+            <button class="btn sm" id="tc2" onclick="selTech(2)">Aufschlag</button>
+            <button class="btn sm" id="tc3" onclick="selTech(3)">Volley</button>
+          </div>
+          <div class="steps" id="techSteps"></div>
+        </div>
+        <div id="techInfo" class="card liquid-glass anim"></div>
+      </div>
+      <div class="beleg" id="techBeleg"></div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die Taktikelemente jedes Schlages</h2>
+      <p class="sub">Egal welches taktische Ziel — verändert werden immer dieselben fünf Stellschrauben.</p>
+      <div class="grid g4">
+        <div class="card liquid-glass anim"><h3>Rhythmus</h3><p>Dem Gegner keinen „Wohlfühlrhythmus" geben.</p></div>
+        <div class="card liquid-glass anim"><h3>Platzierung</h3><p>Ecken, freie Räume, gegen die Laufrichtung.</p></div>
+        <div class="card liquid-glass anim"><h3>Tempo</h3><p>Zeit nehmen — oder bewusst herausnehmen.</p></div>
+        <div class="card liquid-glass anim"><h3>Flughöhe</h3><p>Hoch und lang = Sicherheit; flach = Druck.</p></div>
+        <div class="card liquid-glass anim"><h3>Rotation</h3><p>Topspin / Slice — ggf., als fünftes Element.</p></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Vorgaben „Tennis plus" zu den Terminen 13.05. („grundlegende Ballkontrolle über Rhythmus, Platzierung, Tempo, Flughöhe, ggf. Rotation") und 03.06.2026 (Binnenbruck/Brunert).</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Methodische Reihe für die Schule</h2>
+      <p class="sub">Vom Leichten zum Schweren — der Aufbau, mit dem du Tennis in einer 5. Klasse einführst.</p>
+      <div class="grid g2">
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Phase A · Ballgewöhnung (einzeln)</span>
+          <ul>
+            <li><b>Eierlauf</b> — Ball auf dem Schläger balancieren, durch die Halle laufen</li>
+            <li><b>Dribbeln</b> — Ball mit dem Schläger auf den Boden tippen</li>
+            <li><b>Pfannkuchen</b> — Ball hochspielen und wieder auffangen, ohne dass er fällt</li>
+          </ul>
+        </div>
+        <div class="card liquid-glass anim">
+          <span class="chip acc">Phase B · Kooperation (Partner)</span>
+          <ul>
+            <li><b>Rollen</b> — Ball mit dem Schläger zum Partner rollen (Gefühl für die Schlagfläche)</li>
+            <li><b>Anwerfen – Schlagen</b> — A wirft unterhand an, B schlägt mit der Vorhand zurück in As Hände</li>
+            <li><b>Boden-Wand-Spiel</b> — abwechselnd gegen die Hallenwand spielen</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout liquid-glass anim">
+        <h3 class="head" style="font-size:.9rem">Low-T-Ball — warum es für die Schule ideal ist</h3>
+        <p style="margin-top:8px;color:rgba(255,255,255,.8)">Der Ball wird <b>nicht über ein Netz, sondern unter einem Querbalken hindurch</b> gespielt (z. B. zwei Kästen mit Balken darüber). Der Verzicht auf komplexe Flugkurven bringt sofortige Erfolgserlebnisse — unabhängig von Vorerfahrung. Kostengünstig (Langbänke, Softbälle), geringes Verletzungsrisiko, schult Hand-Auge-Koordination und Beinarbeit. Aufbau in der Sporthalle: <b>Volleyballfeld dritteln.</b></p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Zusammenfassung Stunde 06.05.2026 (Methodischer Aufbau Phase A/B, Low-T-Ball); Vorgaben Ballwechsel in Gang halten (13.05.2026); Born et al. (2025).</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('taktik')">← Zurück</button><button class="btn acc" onclick="go('doppel')">Weiter: Doppel →</button></div>
+  </div>
+</section>
+<!-- ================= DOPPEL ================= -->
+<section class="module" id="doppel">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 6 · Termin 17.06.</div>
+    <h1>Doppeltaktik</h1>
+    <p class="lede">Der taktische Kern ist nicht Schlaghärte, sondern <b>Raumaufteilung, Antizipation und Absprache</b>. Sechs Grundsituationen — klick eine an, die Animation zeigt Stellung und Lösung.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Die Grundsituationen</h2>
+      <p class="sub">Blau = dein Team (S1/S2), Rot = Gegner (S3/S4). Durchgezogene Linie = Schlag, gestrichelt = Lob.</p>
+      <div class="grid" style="grid-template-columns:1.15fr 1fr;gap:16px">
+        <div class="stage liquid-glass anim">
+          <svg id="dopSvg" viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg"></svg>
+          <div class="btnrow" id="dopBtns"></div>
+        </div>
+        <div class="card liquid-glass anim" id="dopInfo"></div>
+      </div>
+      <figure class="gfx liquid-glass anim" id="dopGfx" style="margin-top:16px" onclick="openLb(this.querySelector('img').src, this.querySelector('figcaption').textContent)">
+        <img id="dopGfxImg" src="img/gfx/doppel-ausgangsposition.jpg" alt="Originalgrafik Doppeltaktik">
+        <figcaption id="dopGfxCap"></figcaption>
+      </figure>
+      <div class="beleg"><b>Beleg:</b> Brunert, W. &amp; Feddermann, F. <i>Trainingsplaner Tennis</i> (CD), Spielform „Doppeltaktik" — Originalfolien zu den Spielsituationen (Ausgangsposition, Offensiv–Defensiv, Offensiv–Offensiv, Offensiv–Neutral, Defensiv–Defensiv, Neutral über Diagonale, Neutral parallel). Team-Skript „Taktiken im Doppel", 17.06.2026.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die drei Kern-Situationen auf einen Blick</h2>
+      <p class="sub">Aus der Stundenvorbereitung: Ausgangsposition, Offensiv gegen Defensiv, Offensiv gegen Offensiv. Blau = eigenes Team (S1/S2), Rot = Gegner (S3/S4), gestrichelt = Lob.</p>
+      <div class="grid g2">
+        <figure class="gfx liquid-glass anim" onclick="openLb('img/gfx/doppel-3situationen.jpg','Die drei Doppel-Grundsituationen — Stundenvorbereitung Doppeltaktik')">
+          <img src="img/gfx/doppel-3situationen.jpg" alt="Drei Doppel-Grundsituationen">
+          <figcaption><b>Ausgangsposition · Of.–Def. · Of.–Of.</b><br>Quelle: Stundenvorbereitung Doppeltaktik (nach Brunert/Feddermann, <i>Trainingsplaner Tennis</i>)</figcaption>
+        </figure>
+        <figure class="gfx liquid-glass anim" onclick="openLb('img/gfx/doppel-uebersicht.jpg','Übersicht aller Doppel-Spielsituationen — Trainingsplaner Tennis')">
+          <img src="img/gfx/doppel-uebersicht.jpg" alt="Übersicht Doppel-Spielsituationen">
+          <figcaption><b>Alle Spielsituationen im Überblick</b><br>Quelle: Brunert, W. &amp; Feddermann, F., <i>Trainingsplaner Tennis</i> (CD), Spielform „Doppeltaktik"</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Die vier Organisationsformen</h2>
+      <p class="sub">Die Abgrenzung, nach der am 17.06. und am 08.07. explizit gefragt wurde. Der Unterschied liegt in <b>Gegner</b>, <b>Zählung</b> und <b>Regelmodifikation</b>.</p>
+      <div class="tblwrap liquid-glass anim">
+        <table>
+          <thead><tr><th>Form</th><th>Definition</th><th>Beispiel aus dem Seminar</th><th>Typische Regeln</th></tr></thead>
+          <tbody>
+            <tr><td class="date">Übungsform</td><td><b>Kein Gegner, keine Punkte.</b> Situation künstlich vereinfacht, damit eine Bewegung/Position oft wiederholt werden kann. Der Lehrende kontrolliert den Ablauf.</td><td>Volley auf Zielzonen mit Einwurf</td><td>Keine Zählung, feste Zuspielform, Zielzonen, definierte Wiederholungszahl</td></tr>
+            <tr><td class="date">Spielform</td><td><b>Spiel mit Gegner</b> in spielnaher, aber <b>regelmodifizierter</b> Situation. Bonus-/Limitregeln provozieren die gewünschte Zielhandlung.</td><td>„3-Schlag-Doppel": nur die ersten 3 Schläge zählen; doppelte Punkte, wenn der Netzspieler abschließt</td><td>Punkt zählt, aber mit Bonus/Limit</td></tr>
+            <tr><td class="date">Wettkampfform</td><td><b>Echtes Spiel</b> nach offizieller Zählweise, ohne zusätzliche Verhaltensregeln. Sieger und Verlierer werden ermittelt.</td><td>Doppel bis 7 Punkte (Tiebreak) nach offiziellen Regeln</td><td>Offizielle Regeln, Ergebnis zählt</td></tr>
+            <tr><td class="date">Turnierform</td><td>Spiel in einer <b>organisierten Wettkampfsituation</b> mit Auf-/Abstieg oder Punktevergabe über mehrere Begegnungen. Im Vordergrund steht die Gesamtwertung.</td><td>Kaiserturnier, Round-Robin</td><td>Auf-/Abstieg, Gesamtwertung</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout liquid-glass warnbox anim">
+        <h3 class="head" style="font-size:.9rem">Der Merksatz, der die Klausurfrage löst</h3>
+        <p style="margin-top:8px;color:rgba(255,255,255,.8)">Ein <b>Tiebreak</b> dient nur der Format- bzw. Zeitanpassung und ändert den Charakter der Organisationsform <b>nicht</b>. Erst <b>Bonus- oder Limitregeln</b> machen aus einer Wettkampfform eine Spielform.</p>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Team-Skript „Taktiken im Doppel (Tennis/Padel) — Von Übungs- bis Turnierformen", 17.06.2026, Theorie-Input A; Brunert (08.07.2026): Spielform / Wettkampfform / Turnierform.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Aufgaben des Netzspielers</h2>
+      <div class="grid g3">
+        <div class="card liquid-glass anim"><h3>Longline abdecken</h3><p>Die Linie ist der kürzeste Weg des Returnspielers — sie gehört dem Netzspieler.</p></div>
+        <div class="card liquid-glass anim"><h3>Returnspieler lesen</h3><p>Beobachten und auf dessen „Reingehen" spekulieren. Die ersten drei Schläge entscheiden, wer in die Offensive kommt.</p></div>
+        <div class="card liquid-glass anim"><h3>Immer mit dem Lob rechnen</h3><p>Besonders in der Tandemstellung (Of.–Of.): maximaler Druck, aber maximal lob-anfällig.</p></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Stundenvorbereitung Doppeltaktik (Sachanalyse); Brunert/Feddermann, <i>Trainingsplaner Tennis</i> (CD).</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('technik')">← Zurück</button><button class="btn acc" onclick="go('turniere')">Weiter: Turnierformen →</button></div>
+  </div>
+</section>
+
+<!-- ================= TURNIERE ================= -->
+<section class="module" id="turniere">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 7 · Termin 08.07.</div>
+    <h1>Spiel-, Wettkampf-<br>&amp; Turnierformen</h1>
+    <p class="lede">Für Großgruppen — also für die Schule. Die Definitionen sind knapp und trennscharf; genau so werden sie abgefragt.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Die drei Definitionen (Brunert, 08.07.)</h2>
+      <div class="grid g3">
+        <div class="card liquid-glass anim"><span class="chip acc">Spielform</span><p style="margin-top:8px;font-size:1rem">Praxisnahes Spiel gegeneinander um Punkte <b>ohne großen Druck</b>.</p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">Wettkampfform</span><p style="margin-top:8px;font-size:1rem">Formeller Wettbewerb <b>ohne Turnierstruktur</b>.</p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">Turnierform</span><p style="margin-top:8px;font-size:1rem">Systematisierte <b>Mehrrundentour</b>, Sieger werden ermittelt.</p></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Brunert, W. (08.07.2026): „Weitere Spiel-, Turnier- und Wettkampfformen, u. a. für Großgruppen", Tennis Plus SoSe 2026.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Turnierformate</h2>
+      <div class="grid g3">
+        <div class="card liquid-glass anim"><h3>KO-System</h3><p>Einfaches Ausscheidungsturnier. Nachteil für die Schule: Verlierer sind sofort raus.</p></div>
+        <div class="card liquid-glass anim"><h3>Doppel-KO</h3><p>Zweite Chance über den Verliererbaum.</p></div>
+        <div class="card liquid-glass anim"><h3>Rundenturnier</h3><p>Jeder gegen jeden (Round-Robin). Viele Spiele, faire Gesamtwertung.</p></div>
+        <div class="card liquid-glass anim"><h3>Kombination KO + Runde</h3><p>Gruppenphase, dann KO — das Fußball-WM-Prinzip.</p></div>
+        <div class="card liquid-glass anim"><h3>Leiterturnier</h3><p>Auf-/Abstieg über Positionen. Verwandt: Kaiserturnier, King of the Court.</p></div>
+        <div class="card liquid-glass anim"><h3>Mannschafts&shy;wettbewerbe</h3><p>Fed Cup, Davis Cup, Laver Cup.</p></div>
+        <div class="card liquid-glass anim"><h3>Sonderfall: Schweizer System</h3><p>Paarung nach aktuellem Punktestand, kein Ausscheiden.</p></div>
+        <div class="card liquid-glass anim"><h3>Sonderfall: Skatkarten</h3><p>Teams über Asse/Könige/Damen/Buben bzw. Kreuz/Pik/Herz/Karo — 4 Viererteams = 8 Doppelpaarungen.</p></div>
+        <div class="card liquid-glass anim"><h3>Kaiserturnier</h3><p>Spielzeit 3 Min, Verlierer rücken einen Platz runter, Gewinner rauf. Ziel: der Kaiserplatz.</p></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Brunert (08.07.2026), Abschnitt „Turnierformate" und Spielplan 08.07.2026; Team-Skript Doppel 17.06.2026 (Kaiserturnier); Bezzenberger, R. &amp; Brunert, W. (2020). <i>Tennis Turnierformen — Erlebnis statt Ergebnis</i>. Bezzenberger-Verlag.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Der Formen-Katalog fürs Praxisexamen</h2>
+      <p class="sub">Aus der Kartotheken-Zusammenstellung (Brunert). Die Namen sollten sitzen — die Fundstelle macht sie rückverfolgbar.</p>
+      <div class="tblwrap liquid-glass anim">
+        <table>
+          <thead><tr><th>Form</th><th>Literaturhinweis</th><th>Form</th><th>Literaturhinweis</th></tr></thead>
+          <tbody>
+            <tr><td>4+1=7</td><td>Tennis ist ROT 2, KK 50</td><td>King of the Court</td><td>Tennis ist ROT 2, KK 41</td></tr>
+            <tr><td>4 gegen 8 Tennisbälle</td><td>Tennis ist ROT 2, KK 49</td><td>Kleiner Rundlauf</td><td>Pickleball Kids Coach, KK 41</td></tr>
+            <tr><td>59-Punkte-Wettkampf</td><td>Tennis ist ROT 2, KK 53</td><td>Großer Rundlauf</td><td>Pickleball Kids Coach, KK 42</td></tr>
+            <tr><td>99-Punkte-Wettkampf</td><td>Tennis ist GRÜN, KK 48</td><td>Kreuzchen-Turnier</td><td>Tennis ist ORANGE, KK 45</td></tr>
+            <tr><td>Chinesisches Einzel</td><td>Tennis ist ROT 2, KK 52</td><td>Lotto-Spiel „6 aus 18"</td><td>Tennis ist ROT 2, KK 42</td></tr>
+            <tr><td>Drei-Punkte-Spiel</td><td>Tennis ist ORANGE, KK 50</td><td>Low-T-Ball</td><td>Tennis ist WEISS 2, KK 41</td></tr>
+            <tr><td>Jeder gegen Jeden</td><td>Tennis ist ROT 2, KK 55</td><td>Pyramiden-Spiel</td><td>Tennis ist ROT 2, KK 44</td></tr>
+            <tr><td>Jeder mit Jedem</td><td>Tennis ist ROT 2, KK 54</td><td>Schweizer Turnier</td><td>Tennis ist ROT 2, KK 60</td></tr>
+            <tr><td>Thirty30-Tennis</td><td>Tennis ist ROT 2, KK 45</td><td>Schachturniersystem</td><td>Tennis ist BLAU</td></tr>
+            <tr><td>Niemand scheidet aus (8 Doppel)</td><td>Padel Kids Coach, KK 55</td><td>Wäscheklammerspiel</td><td>Tennis ist BLAU</td></tr>
+            <tr><td>Turnier mit 12 / 16 / 24 TN (Doppel)</td><td>Tennis Plus, KK 55 / 54 / 53</td><td>Turnierform 2er–6er</td><td>Tennis ist BLAU 2, KK 43–47</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="beleg"><b>Beleg:</b> „SoSe 2026 — Spiel- und Wettkampfformen", Zusammenstellung Brunert (Kartothekensammlung, tenniskartotheken.de). KK = Kartothekenkarte.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Konkret: der Spielplan vom 08.07.</h2>
+      <p class="sub">4 Viererteams (Asse, Könige, Damen, Buben) = 8 Doppelpaarungen. Vier Runden, jeweils bis 5 Punkte mit 1 Punkt Vorsprung.</p>
+      <div class="grid g4">
+        <div class="card liquid-glass anim"><span class="chip acc">Runde 1</span><h4>Kleinfeld · TT-Doppel</h4><p>Asse – Buben / Könige – Damen</p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">Runde 2</span><h4>Normalfeld · Doppel</h4><p>Asse – Damen / Könige – Buben</p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">Runde 3</span><h4>King of the Court</h4><p>Asse – Könige / Buben – Damen · Spielbeginn bei 2:2</p></div>
+        <div class="card liquid-glass anim"><span class="chip acc">Runde 4</span><h4>Fehlerspiel</h4><p>Kreuz – Pik / Herz – Karo · bis 3 Siegerpunkte, dann Sieger gg. Sieger</p></div>
+      </div>
+      <div class="beleg"><b>Beleg:</b> Brunert (08.07.2026), Spielplan.</div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('doppel')">← Zurück</button><button class="btn acc" onclick="go('quiz')">Weiter: Quiz →</button></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section class="module" id="quiz">
+  <div class="mod-header"><div class="wrap">
+    <div class="kicker">// Modul 8 · Klausur Rückschlag, 31.07.26, 60 Minuten</div>
+    <h1>Quiz</h1>
+    <p class="lede">Zahlen-Drill zum Umdrehen und 10 zufällige Fragen aus dem Pool — jede Antwort mit Belegstelle. Wer hier scheitert, scheitert am 31.07.</p>
+  </div></div>
+
+  <div class="wrap">
+    <section class="blk">
+      <h2 class="sec">Zahlen-Drill</h2>
+      <p class="sub">Klick zum Umdrehen. Das sind die Zahlen, die eine 60-Minuten-Klausur liebt.</p>
+      <div class="grid g4" id="drill"></div>
+      <div class="beleg"><b>Beleg:</b> Übersicht Rückschlagspiele (Binnenbruck/Brunert); ITF Rules of Tennis Rule 1; Veranstaltungsplan SoSe 2026; Team-Protokolle 29.04. / 20.05. / 10.06.2026.</div>
+    </section>
+
+    <section class="blk">
+      <h2 class="sec">Wissensprüfung</h2>
+      <p class="sub">Der komplette Fragenpool, gemischt — keine Stichprobe, sondern alles. Am Ende bekommst du eine Auswertung pro Themenbereich und kannst nur die falschen Fragen wiederholen. Optional auf einen Bereich eingrenzen:</p>
+      <div class="btnrow" id="qFilter" style="margin-bottom:16px"></div>
+      <div class="card liquid-glass anim" id="quizBox" style="padding:28px">
+        <div class="qbar"><i id="qbarI"></i></div>
+        <div id="quizBody"></div>
+      </div>
+    </section>
+
+    <div class="pager"><button class="btn" onclick="go('turniere')">← Zurück</button><button class="btn acc" onclick="go('start')">Zum Start ↑</button></div>
+  </div>
+</section>
+<!--MODULES-->
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>Array.prototype.slice.call((r||document).querySelectorAll(s));
+const SVGNS="http://www.w3.org/2000/svg";
+const el=(t,a)=>{const n=document.createElementNS(SVGNS,t);for(const k in(a||{}))n.setAttribute(k,a[k]);return n;};
+
+/* ---------------- Module & Navigation ---------------- */
+const MODULES=[
+  {id:"start",label:"Start"},
+  {id:"spiele",label:"Spiele"},
+  {id:"regeln",label:"Regeln"},
+  {id:"vermittlung",label:"Vermittlung"},
+  {id:"taktik",label:"Taktik"},
+  {id:"technik",label:"Technik"},
+  {id:"doppel",label:"Doppel"},
+  {id:"turniere",label:"Turniere"},
+  {id:"quiz",label:"Quiz"}
+];
+/* Pro Modul ein Vollbild-Foto. Datei fehlt -> Fallback-Gradient (Seite bleibt intakt). */
+const BG={start:"img/start.jpg",spiele:"img/spiele.jpg",regeln:"img/regeln.jpg",vermittlung:"img/vermittlung.jpg",
+  taktik:"img/taktik.jpg",technik:"img/technik.jpg",doppel:"img/doppel.jpg",turniere:"img/turniere.jpg",quiz:"img/quiz.jpg"};
+const TINT={start:"200,230,0",spiele:"120,200,255",regeln:"200,230,0",vermittlung:"255,170,90",
+  taktik:"255,110,110",technik:"160,255,190",doppel:"170,150,255",turniere:"255,220,120",quiz:"200,230,0"};
+
+const nav=$("#navlinks");
+MODULES.forEach(m=>{
+  const b=document.createElement("button");
+  b.className="navbtn"; b.dataset.id=m.id; b.textContent=m.label;
+  b.onclick=()=>go(m.id);
+  nav.appendChild(b);
+});
+
+const okImg={};
+Object.keys(BG).forEach(k=>{const i=new Image();i.onload=()=>{okImg[k]=true};i.src=BG[k];});
+
+let curBg="A", current="start";
+function setBg(id){
+  const fb=$("#pageBgFallback");
+  if(fb) fb.style.background =
+    "radial-gradient(120% 90% at 50% -10%, rgba("+(TINT[id]||"200,230,0")+",.08), transparent 55%),"+
+    "radial-gradient(90% 70% at 90% 100%, rgba(255,255,255,.05), transparent 60%),"+
+    "linear-gradient(180deg,#0a0c07,#000 60%)";
+  if(!okImg[id]){ $("#pageBgA").style.opacity=0; $("#pageBgB").style.opacity=0; return; }
+  const next=curBg==="A"?$("#pageBgB"):$("#pageBgA");
+  const prev=curBg==="A"?$("#pageBgA"):$("#pageBgB");
+  next.style.backgroundImage="url('"+BG[id]+"')";
+  next.style.opacity=1; prev.style.opacity=0;
+  curBg=curBg==="A"?"B":"A";
+}
+function entrance(sec){
+  const items=$$(".anim",sec);
+  items.forEach(n=>n.classList.remove("in"));
+  items.forEach((n,i)=>setTimeout(()=>n.classList.add("in"), 60+i*55));
+}
+function go(id){
+  if(!document.getElementById(id))return;
+  current=id;
+  $$(".module").forEach(m=>m.classList.toggle("active",m.id===id));
+  $$(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.id===id));
+  setBg(id);
+  window.scrollTo({top:0,behavior:"instant" in window?"auto":"auto"});
+  entrance(document.getElementById(id));
+  if(id==="start"&&typeof heroWords==="function")heroWords();
+}
+window.go=go;
+
+/* ---------------- Lightbox ---------------- */
+window.openLb=function(src,cap){
+  const lb=$("#lb"); if(!lb)return;
+  $("#lbImg").src=src; $("#lbCap").textContent=cap||"";
+  lb.classList.add("on");
+};
+window.closeLb=function(){const lb=$("#lb"); if(lb)lb.classList.remove("on")};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")window.closeLb()});
+
+/* ---------------- Lernpfad (Start) ---------------- */
+(function lernpfad(){
+  const box=$("#lernpfad"); if(!box)return;
+  [["spiele","Rückschlagspiele","Tennis, Padel, Pickleball, Touchtennis, Streetracket, Tamburello, Speckbrett — Feldmaße, Bälle, Zählweisen"],
+   ["regeln","Regeln &amp; Court","Interaktiver Platz, Zählweise, Calls und Verstöße"],
+   ["vermittlung","Vermittlungskonzepte","DTB, Ballschule, Münsteraner Modell, LTAD, Taktik-Spiel-Modell"],
+   ["taktik","Taktik","Die vier Handlungsziele, taktische Prinzipien, Ampelprinzip, Winkelhalbierende"],
+   ["technik","Technik","Vorhand, Rückhand, Aufschlag, Volley — Knotenpunkte und Fehlerbilder"],
+   ["doppel","Doppel","Die Grundsituationen und die vier Organisationsformen"],
+   ["turniere","Turnierformen","Spiel-, Wettkampf- und Turnierform für Großgruppen"],
+   ["quiz","Quiz","Zahlen-Drill und Multiple Choice mit Belegen"]
+  ].forEach((m,i)=>{
+    const c=document.createElement("div");
+    c.className="card liquid-glass anim"; c.style.cursor="pointer";
+    c.onclick=()=>go(m[0]);
+    c.innerHTML='<span class="chip acc">'+(i+1)+'</span><h3 style="margin-top:10px">'+m[1]+'</h3><p style="font-size:.85rem">'+m[2]+'</p>';
+    box.appendChild(c);
+  });
+})();
+
+/* ---------------- Cursor-Glow ---------------- */
+const GLASS=".liquid-glass";
+document.addEventListener("pointermove",e=>{
+  const t=e.target&&e.target.closest?e.target.closest(GLASS):null;
+  if(!t)return;
+  const r=t.getBoundingClientRect();
+  t.style.setProperty("--mx",((e.clientX-r.left)/r.width*100)+"%");
+  t.style.setProperty("--my",((e.clientY-r.top)/r.height*100)+"%");
+},{passive:true});
+
+/* ---------------- Hero: Reveal mit Kometen-Schweif ---------------- */
+(function hero(){
+  const img=$("#heroImg"), cv=$("#heroCv");
+  if(!img||!cv)return;
+  const ctx=cv.getContext?cv.getContext("2d"):null;
+  if(!ctx){cv.style.display="none";return;}
+  const full=new Image(); let ready=false;
+  full.onload=()=>{ready=true};
+  full.onerror=()=>{ready=false};
+  full.src="img/hero-voll.jpg";
+  img.onerror=()=>{img.style.display="none"};
+
+  const mask=document.createElement("canvas"), mctx=mask.getContext("2d");
+  /* HOLD: der aufgedeckte Bereich bleibt 3 s voll stehen, erst danach verblasst er über FADE ms. */
+  const pts=[]; const HOLD=3000, FADE=900, LIFE=HOLD+FADE, HEAD=185;
+  function size(){
+    const r=cv.getBoundingClientRect();
+    const d=Math.min(window.devicePixelRatio||1,2);
+    cv.width=Math.max(1,r.width*d); cv.height=Math.max(1,r.height*d);
+    mask.width=cv.width; mask.height=cv.height;
+    ctx.setTransform(d,0,0,d,0,0); mctx.setTransform(d,0,0,d,0,0);
+  }
+  size(); window.addEventListener("resize",size);
+
+  document.addEventListener("pointermove",e=>{
+    const r=cv.getBoundingClientRect();
+    if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;
+    const x=e.clientX-r.left, y=e.clientY-r.top;
+    // Punkte ausdünnen: bei 4 s Haltezeit sammeln sich sonst zu viele Gradienten pro Frame
+    const last=pts[pts.length-1];
+    if(last && (x-last.x)*(x-last.x)+(y-last.y)*(y-last.y) < 196) return;   // < 14 px Abstand
+    pts.push({x:x,y:y,t:performance.now()});
+    if(pts.length>320)pts.shift();
+  },{passive:true});
+
+  function draw(){
+    requestAnimationFrame(draw);
+    const r=cv.getBoundingClientRect();
+    const w=r.width,h=r.height;
+    ctx.clearRect(0,0,w,h);
+    const now=performance.now();
+    while(pts.length&&now-pts[0].t>LIFE)pts.shift();
+    if(!ready||!pts.length)return;
+    mctx.clearRect(0,0,w,h);
+    pts.forEach(p=>{
+      const t=now-p.t;
+      // erst 3 s halten (age 0), danach über FADE ms verblassen
+      const age=t<HOLD?0:Math.min(1,(t-HOLD)/FADE);
+      const rad=HEAD*(1-age*0.78);
+      const a=Math.pow(1-age,2)*0.95;
+      if(rad<=1)return;
+      const g=mctx.createRadialGradient(p.x,p.y,0,p.x,p.y,rad);
+      g.addColorStop(0,"rgba(255,255,255,"+a+")");
+      g.addColorStop(.55,"rgba(255,255,255,"+(a*.45)+")");
+      g.addColorStop(1,"rgba(255,255,255,0)");
+      mctx.fillStyle=g; mctx.beginPath(); mctx.arc(p.x,p.y,rad,0,6.284); mctx.fill();
+    });
+    // object-fit: cover NACHRECHNEN (120% Breite, top-verankert wie #heroImg)
+    const boxW=w*1.2, boxH=h;
+    const s=Math.max(boxW/full.width, boxH/full.height);
+    const dw=full.width*s, dh=full.height*s;
+    const dx=(w-dw)/2, dy=0;
+    ctx.drawImage(full,dx,dy,dw,dh);
+    ctx.globalCompositeOperation="destination-in";
+    ctx.drawImage(mask,0,0,w,h);
+    ctx.globalCompositeOperation="source-over";
+  }
+  draw();
+})();
+
+window.heroWords=function(){
+  const h=$("#heroHead"); if(!h||!h.animate)return;
+  $$(".w",h).forEach((w,i)=>{
+    try{ w.animate([{opacity:0,transform:"translateY(30px)",filter:"blur(10px)"},{opacity:1,transform:"none",filter:"blur(0)"}],
+      {duration:800,delay:i*100,fill:"backwards",easing:"cubic-bezier(.2,.8,.2,1)"}); }catch(e){}
+  });
+};
+
+/* ---------------- Court-SVG ---------------- */
+const S=26, X0=67, Y0=41;
+const CW=10.97*S, CL=23.77*S;
+const X1=X0+CW, Y1=Y0+CL;
+const SX0=X0+1.37*S, SX1=X1-1.37*S;       // Einzel-Seitenlinien
+const NY=Y0+CL/2;                          // Netz
+const SVT=NY-6.40*S, SVB=NY+6.40*S;        // Aufschlaglinien
+const MX=(X0+X1)/2;
+
+const COURT_INFO={
+  grund:{n:"23,77 m",t:"Grundlinie",d:"Die Grundlinien begrenzen den Platz in der Länge. Der Platz ist ein Rechteck von <b>23,77 m</b> Länge (78 ft). In ihrer Mitte sitzt das <b>Mittelzeichen</b> (10 cm), das die Aufschlaghälften trennt.",b:"ITF Rules of Tennis, Rule 1 (The Court)"},
+  doppel:{n:"10,97 m",t:"Doppel-Seitenlinie",d:"Beim Doppel ist der Platz <b>10,97 m</b> breit (36 ft). Diese Linien sind nur im Doppel im Spiel — beim Aufschlag gilt aber immer das <b>Einzel-Aufschlagfeld</b>.",b:"ITF Rules of Tennis, Rule 1"},
+  einzel:{n:"8,23 m",t:"Einzel-Seitenlinie",d:"Im Einzel ist der Platz <b>8,23 m</b> breit (27 ft). Die Differenz zur Doppellinie ist der Doppelkanal — je <b>1,37 m</b> pro Seite.",b:"ITF Rules of Tennis, Rule 1"},
+  kanal:{n:"1,37 m",t:"Doppelkanal (Alley)",d:"Der Streifen zwischen Einzel- und Doppel-Seitenlinie, je Seite <b>1,37 m</b>. Padel und Pickleball haben laut Seminar-Übersicht <b>keinen</b> Doppelkanal, Touchtennis dagegen schon.",b:"ITF Rules of Tennis, Rule 1; Übersicht Rückschlagspiele (Binnenbruck/Brunert)"},
+  aufschlaglinie:{n:"6,40 m",t:"Aufschlaglinie (T-Linie)",d:"Verläuft parallel zum Netz im Abstand von <b>6,40 m</b> (21 ft) auf beiden Seiten. Beim <b>Speckbrett gibt es keine T-Linie</b> — beliebte Fangfrage.",b:"ITF Rules of Tennis, Rule 1; Team-Protokoll 29.04.2026 (Speckbrett)"},
+  mittellinie:{n:"5 cm",t:"Mittellinie (Centre Service Line)",d:"Teilt die Aufschlagfelder in zwei Hälften. Alle Linien sind 2,5–5 cm breit, nur die Grundlinie darf bis 10 cm breit sein.",b:"ITF Rules of Tennis, Rule 1"},
+  feld:{n:"6,40 × 4,115 m",t:"Aufschlagfeld",d:"Vier Aufschlagfelder, je <b>6,40 m</b> tief und <b>4,115 m</b> breit. Aufgeschlagen wird immer <b>diagonal</b> ins gegenüberliegende Feld. Zwei Versuche — beim ersten ist mehr Risiko möglich.",b:"ITF Rules of Tennis, Rules 1 &amp; 16; Team-Skript 03.06.2026"},
+  netz:{n:"0,914 m",t:"Netz",d:"<b>0,914 m</b> hoch in der Mitte (durch einen Gurt straff gehalten), <b>1,07 m</b> an den Netzpfosten. Zum Vergleich Padel: 0,88 m Mitte / 0,92 m an den Pfosten.",b:"ITF Rules of Tennis, Rule 1; FIP Padel Regulations"},
+  hinterfeld:{n:"5,49 m",t:"Hinterfeld",d:"Der Raum zwischen Aufschlaglinie und Grundlinie (<b>23,77/2 − 6,40 = 5,485 m</b>). Hier findet das Grundlinienspiel statt — Ziel 1 und 2 des Taktikmodells.",b:"ITF Rules of Tennis, Rule 1; DTB Tennis-Lehrplan Band 1, S. 11"}
+};
+(function buildCourt(){
+  const svg=$("#courtSvg"); if(!svg)return;
+  svg.appendChild(el("rect",{x:0,y:0,width:420,height:700,rx:14,fill:"#0e2c1c"}));
+  svg.appendChild(el("rect",{x:X0-16,y:Y0-16,width:CW+32,height:CL+32,rx:6,fill:"#14503a",opacity:".55"}));
+  const L=(x1,y1,x2,y2,w)=>svg.appendChild(el("line",{x1,y1,x2,y2,stroke:"#fff","stroke-width":w||2,opacity:".92"}));
+
+  // klickbare Zonen
+  const zone=(x,y,w,h,k)=>{const z=el("rect",{x,y,width:w,height:h,class:"zone hit"});z.dataset.k=k;svg.appendChild(z);return z;};
+  zone(X0,Y0,1.37*S,CL,"kanal"); zone(X1-1.37*S,Y0,1.37*S,CL,"kanal");
+  zone(SX0,SVT,MX-SX0,6.40*S,"feld"); zone(MX,SVT,SX1-MX,6.40*S,"feld");
+  zone(SX0,NY,MX-SX0,6.40*S,"feld");  zone(MX,NY,SX1-MX,6.40*S,"feld");
+  zone(SX0,Y0,SX1-SX0,SVT-Y0,"hinterfeld"); zone(SX0,SVB,SX1-SX0,Y1-SVB,"hinterfeld");
+
+  // sichtbare Linien
+  L(X0,Y0,X1,Y0,3); L(X0,Y1,X1,Y1,3);          // Grundlinien
+  L(X0,Y0,X0,Y1); L(X1,Y0,X1,Y1);              // Doppel
+  L(SX0,Y0,SX0,Y1); L(SX1,Y0,SX1,Y1);          // Einzel
+  L(SX0,SVT,SX1,SVT); L(SX0,SVB,SX1,SVB);      // Aufschlaglinien
+  L(MX,SVT,MX,SVB);                            // Mittellinie
+  L(MX,Y0,MX,Y0+8,3); L(MX,Y1-8,MX,Y1,3);      // Mittelzeichen
+
+  // Netz
+  svg.appendChild(el("rect",{x:X0-14,y:NY-3,width:CW+28,height:6,fill:"#dfe7ea",opacity:".9",rx:2}));
+  for(let x=X0-14;x<X1+14;x+=7) svg.appendChild(el("line",{x1:x,y1:NY-3,x2:x,y2:NY+3,stroke:"#0e2c1c","stroke-width":.8,opacity:".5"}));
+
+  // Linien-Hitboxen (oben drüber)
+  const hit=(x1,y1,x2,y2,k)=>{const l=el("line",{x1,y1,x2,y2,class:"lineHit hit"});l.dataset.k=k;svg.appendChild(l);return l;};
+  hit(X0,Y0,X1,Y0,"grund"); hit(X0,Y1,X1,Y1,"grund");
+  hit(X0,Y0,X0,Y1,"doppel"); hit(X1,Y0,X1,Y1,"doppel");
+  hit(SX0,Y0,SX0,Y1,"einzel"); hit(SX1,Y0,SX1,Y1,"einzel");
+  hit(SX0,SVT,SX1,SVT,"aufschlaglinie"); hit(SX0,SVB,SX1,SVB,"aufschlaglinie");
+  hit(MX,SVT,MX,SVB,"mittellinie");
+  hit(X0-14,NY,X1+14,NY,"netz");
+
+  const info=$("#courtInfo");
+  svg.addEventListener("click",e=>{
+    const t=e.target; if(!t.dataset||!t.dataset.k)return;
+    $$(".hit",svg).forEach(n=>n.classList.remove("sel"));
+    t.classList.add("sel");
+    const d=COURT_INFO[t.dataset.k]; if(!d||!info)return;
+    info.innerHTML='<div class="kicker" style="margin-bottom:8px">Auswahl</div>'+
+      '<span class="num">'+d.n+'</span>'+
+      '<h3 class="head" style="font-size:1.05rem;margin-bottom:10px">'+d.t+'</h3>'+
+      '<p style="color:rgba(255,255,255,.8);font-size:.92rem">'+d.d+'</p>'+
+      '<div class="beleg"><b>Beleg:</b> '+d.b+'</div>';
+  });
+})();
+
+/* ---------------- Calls & Verstöße ---------------- */
+const CALLS=[
+  {n:"Let",k:"Aufschlag",d:"Aufschlag berührt das Netz und landet trotzdem korrekt im Feld → Wiederholung, kein Fehler. Auch bei Störung des Punktes.",arms:[[50,52,18,30],[50,52,82,30]],extra:'<circle cx="50" cy="20" r="8" fill="none" stroke="var(--accent)" stroke-width="2"/>'},
+  {n:"Fault",k:"Aufschlag",d:"Der Aufschlag landet nicht im diagonalen Aufschlagfeld, oder der Ball wird beim Schlagversuch verfehlt. Zwei Versuche — zweimal Fault = Doppelfehler.",arms:[[50,52,20,66],[50,52,80,66]],extra:'<line x1="34" y1="16" x2="66" y2="40" stroke="var(--bad)" stroke-width="3"/><line x1="66" y1="16" x2="34" y2="40" stroke="var(--bad)" stroke-width="3"/>'},
+  {n:"Foot Fault",k:"Aufschlag",d:"Der Aufschläger berührt vor dem Ballkontakt mit dem Fuß die Grundlinie oder das Feld. Zählt als Fehler.",arms:[[50,52,24,44],[50,52,78,58]],extra:'<line x1="18" y1="80" x2="86" y2="80" stroke="var(--bad)" stroke-width="3"/><circle cx="40" cy="76" r="5" fill="var(--bad)"/>'},
+  {n:"Out",k:"Ball",d:"Der Ball landet außerhalb der Linien. <b>Berührt der Ball die Linie, ist er drin</b> — die Linie gehört zum Feld.",arms:[[50,52,14,52],[50,52,86,52]],extra:'<line x1="18" y1="76" x2="82" y2="76" stroke="#fff" stroke-width="2"/><circle cx="86" cy="66" r="5" fill="var(--bad)"/>'},
+  {n:"Netzberührung",k:"Verstoß",d:"Spieler, Schläger oder Kleidung berühren Netz, Pfosten oder das gegnerische Feld, solange der Ball im Spiel ist → Punktverlust.",arms:[[50,52,26,34],[50,52,74,34]],extra:'<line x1="14" y1="46" x2="86" y2="46" stroke="var(--bad)" stroke-width="3"/>'},
+  {n:"Doppelberührung",k:"Verstoß",d:"Der Ball wird zweimal berührt bzw. nicht sauber geschlagen (carry/double hit) → Punktverlust.",arms:[[50,52,22,40],[50,52,78,40]],extra:'<circle cx="26" cy="30" r="5" fill="var(--warn)"/><circle cx="40" cy="22" r="5" fill="var(--warn)" opacity=".55"/>'},
+  {n:"Aufschlag diagonal",k:"Aufschlag",d:"Immer <b>diagonal</b> ins gegenüberliegende Feld. Bei geradem Punktestand von rechts, bei ungeradem von links — gilt so auch für Pickleball und Speckbrett.",arms:[[50,52,20,64],[50,52,84,24]],extra:'<line x1="20" y1="78" x2="86" y2="20" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/>'},
+  {n:"Einstand / Deuce",k:"Zählweise",d:"Bei 40:40 wird auf Einstand gestellt. Danach Vorteil — zwei Punkte in Folge gewinnen das Spiel.",arms:[[50,52,26,56],[50,52,74,56]],extra:'<text x="50" y="26" text-anchor="middle" font-size="17" font-weight="800" fill="var(--accent)" font-family="Archivo">40:40</text>'},
+  {n:"Tiebreak",k:"Zählweise",d:"Bei 6:6 im Satz: Tiebreak bis 7 Punkte (mind. 2 Punkte Vorsprung). Im Seminar: Match-Tie-Break im dritten Satz.",arms:[[50,52,22,32],[50,52,78,32]],extra:'<text x="50" y="26" text-anchor="middle" font-size="17" font-weight="800" fill="var(--accent)" font-family="Archivo">6:6</text>'}
+];
+(function buildCalls(){
+  const box=$("#calls"); if(!box)return;
+  CALLS.forEach(c=>{
+    const d=document.createElement("div");
+    d.className="callcard liquid-glass anim";
+    d.innerHTML='<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+
+      '<circle cx="50" cy="52" r="0"/>'+
+      '<circle cx="50" cy="44" r="7" fill="none" stroke="#fff" stroke-width="2.4"/>'+
+      '<line x1="50" y1="51" x2="50" y2="74" stroke="#fff" stroke-width="2.4"/>'+
+      '<line x1="50" y1="74" x2="40" y2="92" stroke="#fff" stroke-width="2.4"/>'+
+      '<line x1="50" y1="74" x2="60" y2="92" stroke="#fff" stroke-width="2.4"/>'+
+      c.arms.map(a=>'<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+a[2]+'" y2="'+a[3]+'" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round"/>').join("")+
+      (c.extra||"")+'</svg>'+
+      '<h4>'+c.n+'</h4><span class="chip">'+c.k+'</span><p>'+c.d+'</p>';
+    d.onclick=()=>d.classList.toggle("shown");
+    box.appendChild(d);
+  });
+})();
+window.toggleLern=function(){
+  document.body.classList.toggle("lernmodus");
+  const on=document.body.classList.contains("lernmodus");
+  const b=$("#lernBtn"); if(b)b.textContent=on?"Lernmodus aus":"Lernmodus an";
+  if(on)$$(".callcard").forEach(c=>c.classList.remove("shown"));
+};
+window.revealAllCalls=function(){$$(".callcard").forEach(c=>c.classList.add("shown"))};
+
+/* ---------------- Original-Grafiken Ballschule ---------------- */
+(function gfxBall(){
+  const box=$("#gfxBallschule"); if(!box)return;
+  [["img/gfx/ballschule-stufen.jpg","Die 5 Stufen der Heidelberger Ballschule","Von der U3-Ballschule (Stufe 1) bis zur sportspielspezifischen Ballschule (Stufe 5, 6–10 Jahre). <b>Quelle:</b> Input Heidelberger Ballschule, Binnenbruck/Brunert."],
+   ["img/gfx/ballschule-basiskompetenzen.jpg","Die Basiskompetenzen A · B · C","Koordinative (sportspielübergreifend), perzeptiv-motorische (tennisgerichtet), technisch-taktische (tennisspezifisch) Basiskompetenzen. <b>Quelle:</b> Input Heidelberger Ballschule."],
+   ["img/gfx/ballschule-ziele.jpg","Ziele der Rückschlagspiele","Die Zielmatrix mit den Druckvariationen — Zeitdruck, Präzisionsdruck, Komplexitätsdruck, Organisationsdruck, Variabilitätsdruck. <b>Quelle:</b> Input Heidelberger Ballschule."],
+   ["img/gfx/ballschule-tennis-ziele.jpg","Ziele der Ballschule Tennis (8×7×6)","Tab. 2 aus der ersten Veranstaltung: die 8×7×6-Basiskompetenzen der Ballschule Tennis. <b>Quelle:</b> Ablauf 1. Veranstaltung SoSe 26; Roth et al. (2022), <i>Ballschule Tennis</i>."]
+  ].forEach(g=>{
+    const f=document.createElement("figure");
+    f.className="gfx liquid-glass anim";
+    f.innerHTML='<img src="'+g[0]+'" alt="'+g[1]+'"><figcaption><b>'+g[1]+'</b><br>'+g[2]+'</figcaption>';
+    f.onclick=()=>window.openLb(g[0],g[1]);
+    box.appendChild(f);
+  });
+})();
+
+/* ---------------- Reveal-Karten ---------------- */
+function revealCards(sel,data){
+  const box=$(sel); if(!box)return;
+  data.forEach(d=>{
+    const c=document.createElement("div");
+    c.className="reveal liquid-glass anim";
+    const head=d.img
+      ? '<div class="rvhead"><img src="'+d.img+'" alt=""><div><span class="tag">aufdecken</span><h3 class="head" style="font-size:1rem;margin-top:4px">'+d.q+'</h3></div></div>'
+      : '<span class="tag">aufdecken</span><h3 class="head" style="font-size:1rem;margin-top:8px">'+d.q+'</h3>';
+    c.innerHTML=head+'<div class="answer"><p style="color:rgba(255,255,255,.82);font-size:.92rem">'+d.a+'</p></div>';
+    c.onclick=()=>c.classList.toggle("open");
+    box.appendChild(c);
+  });
+}
+revealCards("#steckbriefe",[
+  {img:"img/gfx/schlaeger-pickleball.png",q:"Pickleball — die drei Sonderregeln",a:"<b>Doppel-Bounce-Regel:</b> Nach dem Aufschlag muss der Ball auf jeder Seite einmal aufspringen, bevor direkt aus der Luft gespielt werden darf. <b>Die „Küche“</b> (Non-Volley-Zone am Netz): dort darf nicht volley geschlagen werden. <b>Zählweise:</b> Nur das aufschlagende Team kann punkten — Fehler = kein Punkt, sondern Aufschlagwechsel. Bis 11, mind. 2 Punkte Abstand. Ansage im Doppel mit drei Zahlen: eigene – Gegner – Aufschläger (1 oder 2). Gerader Stand → Aufschlag von rechts, ungerader → von links."},
+  {img:"img/gfx/schlaeger-speckbrett.png",q:"Speckbrett — Fangfragen des Seminars",a:"Ursprung: <b>Schwarzwald-Region</b> (nicht Münsterland!). In Münster <b>27 kostenlose Plätze</b>. Feld = kompletter Tennisplatz 23,77 × 10,97 m, aber <b>ohne T-Linie</b>. Ball: normaler Tennisball, Schläger: Holz mit runden Löchern. Sätze bis 21 (bei 20:20 weiter bis 2 Punkte Abstand); dritter Satz Seitenwechsel bei 10:x. Aufschlag: hinter der Linie, <b>diagonal</b>; es schlägt auf, wer den letzten Ballwechsel <b>verloren</b> hat. Zweiter Versuch nur bei Netzroller."},
+  {img:"img/gfx/schlaeger-touchtennis.png",q:"Touchtennis — die Zahlen",a:"Schläger: <b>21 Zoll</b> (Kinder-Tennisschläger). Feld: <b>12 × 6 m</b> (Einzel 5 m breit, Doppel 6 m). Ball: gelber Softball, <b>Ø 8 cm</b>. Aufschlag cross. Gezählt wird wie im Tennis (15/30/40), aber <b>Sätze gehen nur bis 4</b> Spiele, Tie-Break bis 5 Punkte bei 4:4."},
+  {img:"img/gfx/schlaeger-padel.png",q:"Padel — was anders ist als Tennis",a:"Feld <b>20 × 10 m</b>, umschlossen von Glaswänden und Gitter, <b>kein Doppelkanal</b>. Gespielt wird <b>ausschließlich Doppel</b>, Zählweise wie im Tennis. Taktischer Clou: Bälle bewusst gegen die Glaswand springen lassen, um <b>Zeit zur Positionierung</b> zu gewinnen und schwierige Bälle zu entschärfen."},
+  {img:"img/gfx/schlaeger-tamburello.png",q:"Tamburello — der Schläger",a:"Kreisrund, <b>Ø 24–28 cm</b>, engmaschige <b>Nylonmembran</b>, <b>kein Schaft</b> — der Griff sitzt direkt am Rahmen, der Daumen liegt beim Spielen auf der Bespannung. Hoher Aufforderungscharakter, aber unberechenbare Eigendynamik: „Ein Wolf im Schafspelz.“ Felder: Indoor 34 × 16 m, Beach 24 × 11 m, Kleinfeld 9,45 × 4,10 m. Gewinnsätze bis 21 Punkte (bei 2:2)."},
+  {img:"img/gfx/schlaeger-streetracket.png",q:"Streetracket — das Prinzip",a:"Drei Felder à <b>2 × 2 m</b> (Kreide reicht — deshalb „Street“). <b>Immer nach oben spielen, kein Volley.</b> Bis 11 Punkte. Einzel oder Doppel. Maximale Zugänglichkeit: kein Netz, keine Anlage, kein Verein."}
+]);
+revealCards("#schulfragen",[
+  {q:"Wie führe ich Tennis in einer 5. Klasse ein?",a:"Methodischer Aufbau vom Leichten zum Schweren. <b>Phase A — Ballgewöhnung einzeln:</b> Eierlauf (Ball auf dem Schläger balancieren), Dribbeln, Pfannkuchen (hochspielen &amp; auffangen). <b>Phase B — Kooperation zu zweit:</b> Ball zum Partner rollen, Anwerfen–Schlagen, Boden-Wand-Spiel."},
+  {q:"Gegeneinander oder miteinander spielen lassen?",a:"<b>Miteinander</b>, ggf. im Doppel: den Ball in Gang halten, Komplexität verringern, Druck rausnehmen, Teamgeist fördern. Erst danach das Gegeneinander."},
+  {q:"Aufbau in einer normalen Sporthalle?",a:"<b>Volleyballfeld dritteln.</b> Für Low-T-Ball: zwei Kästen mit einem Balken darüber — der Ball wird darunter hindurch gespielt statt über ein Netz."},
+  {q:"Was heißt „Was“ vor „Wie“?",a:"Spielintelligenz in 4 Phasen: <b>Wahrnehmung/Antizipation</b> (Was passiert hier?) → <b>Verstehen/Interpretieren</b> → <b>Entscheidungsfindung</b> (Was muss ich tun?) → <b>Technische Ausführung</b> (Wie mache ich es?). Erst das taktische „Was“, dann das technische „Wie“."},
+  {q:"Welche Turnierform für die Sek II?",a:"<b>King of the Court:</b> Teams pendeln sich durch kurze Spiele auf ähnliches Niveau ein, ständig wechselnde Gegner, kurze Wartezeiten, Wettkampfcharakter — hohe Aktivzeit für alle."},
+  {q:"Welche Unterscheidung trifft man bei den Vermittlungskonzepten?",a:"<b>Tennisspezifische</b> Vermittlung (DTB-Kinderkonzept, Ballschule Tennis, Münsteraner Modell) versus <b>unspezifische / integrative</b> Vermittlung (Heidelberger Ballschule, TGfU, Kasseler Vermittlungsmodell, LTAD, Taktik-Spiel-Modell)."}
+]);
+
+/* ---------------- Taktik: 4 Ziele ---------------- */
+const TAKTIK=[
+  {t:"1 · Den Ballwechsel in Gang halten",
+   d:"Die Basis. Sicher und kontrolliert zurückspielen, um den Ballwechsel aufrechtzuerhalten. Fokus: <b>Konstanz, Ballkontrolle, Vermeidung von Eigenfehlern</b>. Gespielt wird hoch über das Netz, lang, cross — die sicherste Bahn.",
+   k:["Rhythmus finden","Hohe Flughöhe = Sicherheitsmarge","Cross ist der längste und sicherste Weg","Miteinander, nicht gegeneinander"],
+   term:"13.05.2026 · Vorhand & Rückhand",
+   short:["Ballwechsel","in Gang","halten"]},
+  {t:"2 · Gegnerische Punktgewinne vermeiden",
+   d:"Dem Gegner <b>keine Angriffschance</b> geben. Tief und hoch spielen, damit er nicht nach vorne kommt. Nach jedem Schlag die eigene Position aktiv sichern und verbessern. Variation von Tempo, Länge und Rotation, damit er keinen Wohlfühlrhythmus findet.",
+   k:["Tiefencheck: Ball hinter die T-Linie","Nach dem Schlag: beste Position suchen","Kein Wohlfühlrhythmus für den Gegner","Wechsel Angriff/Abwehr bewusst steuern"],
+   term:"20.05.2026 · Sicherheit VH/RH",
+   short:["Punktgewinne","des Gegners","vermeiden"]},
+  {t:"3 · Den Gegner unter Druck setzen",
+   d:"Baut auf 1 und 2 auf. Den Gegner <b>zeitlich, räumlich und technisch</b> so fordern, dass er zu Fehlern oder schwachen Antworten gezwungen wird. Zentrale Einflussgrößen: <b>Zeit, Raum, Risiko, Schlagdruck</b>. Aufschlag und Volley sind die Werkzeuge.",
+   k:["Zeitdruck: schnelle Schläge, früh im Aufsteigen treffen","Raumdruck: in die Ecken, gegen die Laufrichtung","Netzangriff nach gutem Aufschlag","Eigene Position sichern und verbessern"],
+   term:"03.06.2026 · Aufschlag & Volley",
+   short:["Gegner unter","Druck","setzen"]},
+  {t:"4 · Eigene Punkte erzielen",
+   d:"Den Ballwechsel <b>aktiv und bewusst beenden</b> — durch Winner oder durch Forced Error. Punkte entstehen nicht durch härteres, sondern durch <b>klügeres</b> Schlagen: Gegner bewegen, tief spielen, in freie Räume, geduldig Druck aufbauen, Richtungswechsel.",
+   k:["Winner: Gegner erreicht den Ball nicht mehr","Forced Error: Fehler unter Druck","Return als Punktvorbereitung","Winkelspiel: Lücke erkennen und öffnen"],
+   term:"10.06.2026 · Aufschlag & Return",
+   short:["Eigene","Punkte","erzielen"]}
+];
+let tkI=0;
+(function initTaktik(){
+  const svg=$("#taktikSvg"); if(!svg)return;
+  svg.appendChild(el("rect",{x:0,y:0,width:400,height:300,rx:12,fill:"#0e2c1c"}));
+  // Treppe: 4 Stufen, aufsteigend
+  const W=78, GAP=8, BASE=272;
+  TAKTIK.forEach((t,i)=>{
+    const h=58+i*54, x=22+i*(W+GAP), y=BASE-h;
+    const g=el("g",{class:"stair"}); g.dataset.i=i;
+    g.appendChild(el("rect",{id:"stair"+i,x:x,y:y,width:W,height:h,rx:8,
+      fill:"rgba(255,255,255,.07)",stroke:"rgba(255,255,255,.22)","stroke-width":1}));
+    const n=el("text",{x:x+W/2,y:y+26,"text-anchor":"middle","font-size":"20","font-weight":"900",
+      fill:"var(--accent)","font-family":"Archivo","pointer-events":"none"});
+    n.textContent=(i+1); g.appendChild(n);
+    t.short.forEach((line,li)=>{
+      const tx=el("text",{x:x+W/2,y:y+46+li*12,"text-anchor":"middle","font-size":"9",
+        fill:"rgba(255,255,255,.72)","font-family":"Barlow","pointer-events":"none"});
+      tx.textContent=line; g.appendChild(tx);
+    });
+    g.onclick=()=>window.playTaktik(i);
+    svg.appendChild(g);
+  });
+  svg.appendChild(el("line",{x1:14,y1:BASE+6,x2:386,y2:BASE+6,stroke:"rgba(255,255,255,.25)","stroke-width":1.5}));
+  const cap=el("text",{x:200,y:293,"text-anchor":"middle","font-size":"9.5",fill:"rgba(255,255,255,.45)","font-family":"Barlow"});
+  cap.textContent="Sicherheit → Platzierung → Druck → Abschluss (DTB-Lehrplan Bd. 1, S. 11)";
+  svg.appendChild(cap);
+})();
+window.playTaktik=function(i){
+  tkI=i;
+  const d=TAKTIK[i], info=$("#taktikInfo");
+  ["tk1","tk2","tk3","tk4"].forEach((id,j)=>{const b=$("#"+id); if(b)b.classList.toggle("acc",j===i)});
+  TAKTIK.forEach((_,j)=>{
+    const r=$("#stair"+j); if(!r)return;
+    r.setAttribute("fill", j===i?"rgba(200,230,0,.42)" : (j<i?"rgba(200,230,0,.12)":"rgba(255,255,255,.07)"));
+    r.setAttribute("stroke", j===i?"var(--accent)":"rgba(255,255,255,.22)");
+  });
+  if(!info)return;
+  info.innerHTML='<span class="chip acc">'+d.term+'</span><h3 class="head" style="font-size:1.05rem;margin:10px 0">'+d.t+'</h3>'+
+    '<p style="color:rgba(255,255,255,.82);font-size:.92rem">'+d.d+'</p><ul style="margin-top:12px">'+
+    d.k.map(x=>'<li>'+x+'</li>').join("")+'</ul>';
+};
+if($("#taktikSvg"))window.playTaktik(0);
+
+/* Winkelhalbierende */
+(function initWinkel(){
+  const svg=$("#winkelSvg"); if(!svg)return;
+  svg.appendChild(el("rect",{x:0,y:0,width:400,height:300,rx:12,fill:"#0e2c1c"}));
+  svg.appendChild(el("rect",{x:40,y:30,width:320,height:240,fill:"none",stroke:"#fff","stroke-width":1.6,opacity:".5"}));
+  svg.appendChild(el("line",{x1:40,y1:150,x2:360,y2:150,stroke:"#dfe7ea","stroke-width":3,opacity:".85"}));
+  svg.appendChild(el("line",{x1:200,y1:30,x2:200,y2:270,stroke:"#fff","stroke-width":1,opacity:".25","stroke-dasharray":"4 4"}));
+  svg.appendChild(el("text",{x:206,y:26,fill:"rgba(255,255,255,.4)","font-size":"9","font-family":"Barlow"})).textContent="Mittelzeichen";
+  // Gegner in der Ecke
+  svg.appendChild(el("circle",{cx:70,cy:56,r:8,fill:"#f87171"}));
+  svg.appendChild(el("text",{x:70,y:44,fill:"#f87171","font-size":"9","text-anchor":"middle","font-family":"Barlow"})).textContent="Gegner";
+  // Extremflugbahnen
+  svg.appendChild(el("line",{x1:70,y1:56,x2:62,y2:262,stroke:"rgba(255,255,255,.45)","stroke-width":1.6,"stroke-dasharray":"5 4"}));
+  svg.appendChild(el("line",{x1:70,y1:56,x2:352,y2:262,stroke:"rgba(255,255,255,.45)","stroke-width":1.6,"stroke-dasharray":"5 4"}));
+  svg.appendChild(el("text",{x:56,y:276,fill:"rgba(255,255,255,.5)","font-size":"9","font-family":"Barlow"})).textContent="longline";
+  svg.appendChild(el("text",{x:320,y:276,fill:"rgba(255,255,255,.5)","font-size":"9","font-family":"Barlow"})).textContent="cross";
+  // Winkelhalbierende
+  svg.appendChild(el("line",{x1:70,y1:56,x2:207,y2:262,stroke:"var(--accent)","stroke-width":2,opacity:".9"}));
+  svg.appendChild(el("circle",{id:"wkMe",cx:200,cy:245,r:9,fill:"#60a5fa"}));
+  svg.appendChild(el("text",{id:"wkLbl",x:200,y:232,fill:"#60a5fa","font-size":"9","text-anchor":"middle","font-family":"Barlow"})).textContent="falsch: Mitte";
+})();
+let wkAnim=null;
+window.playWinkel=function(){
+  const me=$("#wkMe"), lbl=$("#wkLbl"); if(!me)return;
+  if(wkAnim)cancelAnimationFrame(wkAnim);
+  const t0=performance.now();
+  function step(now){
+    const f=Math.min(1,(now-t0)/1100);
+    const e=f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2;
+    const x=200+(207-200)*e - 0 + (-0);
+    // von Mitte (200) auf die Winkelhalbierende bei y=245 -> x≈203; plus Überlauf-Effekt sichtbar machen
+    const tx=200+(203-200)*e;
+    me.setAttribute("cx",tx);
+    if(lbl){lbl.setAttribute("x",tx); lbl.textContent = f>.6?"richtig: auf der Winkelhalbierenden":"falsch: Mitte";}
+    if(f<1)wkAnim=requestAnimationFrame(step);
+  }
+  wkAnim=requestAnimationFrame(step);
+};
+
+/* 5 Phasen */
+(function phasen(){
+  const box=$("#phasen"); if(!box)return;
+  [["1","Antizipation & Wahrnehmung","der Situation und des ankommenden Balles."],
+   ["2","Beurteilung","der Situation und der eigenen Handlungsoptionen."],
+   ["3","Entscheidung","für die erfolgversprechendste Lösung — Schlagauswahl, Richtung. <b>Primär die eigenen</b>, erst sekundär die gegnerischen Stärken und Schwächen."],
+   ["4","Schlagausführung","die technische Umsetzung."],
+   ["5","Bewertung & Verhaltenssteuerung","Ergebnis auswerten → Bestärkung oder Änderung des Verhaltens in der nächsten taktischen Handlung."]
+  ].forEach(p=>{
+    const c=document.createElement("div");
+    c.className="card liquid-glass anim";
+    c.innerHTML='<span class="num">'+p[0]+'</span><h3>'+p[1]+'</h3><p>'+p[2]+'</p>';
+    box.appendChild(c);
+  });
+})();
+})();
+</script>
+<script>
+(function(){
+"use strict";
+const $=(s,r)=>(r||document).querySelector(s);
+const $$=(s,r)=>Array.prototype.slice.call((r||document).querySelectorAll(s));
+const SVGNS="http://www.w3.org/2000/svg";
+const el=(t,a)=>{const n=document.createElementNS(SVGNS,t);for(const k in(a||{}))n.setAttribute(k,a[k]);return n;};
+
+/* ---------------- TECHNIK ---------------- */
+const TECH=[
+ {name:"Vorhand",img:"img/tech-vorhand.png",chip:"Grundschlag · 13.05.",
+  steps:["Ausholen: Schläger nach hinten führen, Oberkörper seitlich eindrehen","Beinarbeit: Knie leicht gebeugt, Gewicht nach vorne verlagern","Treffpunkt VOR dem Körper — Schlagbewegung von hinten unten nach vorne oben","Ausschwung: locker über die gegenüberliegende Schulter"],
+  knoten:["Auf der Schlaghandseite gespielt","Häufigster Schlag, um Druck aufzubauen","Hüfte und Oberkörper drehen mit — Stabilität und Schlagkraft kommen aus dem Rumpf"],
+  fehler:["Treffpunkt zu spät (neben oder hinter dem Körper) → Ball fliegt quer","Kein Ausschwung → Ball wird 'gestoppt', keine Länge","Arm statt Rumpf: Schlag nur aus dem Ellbogen","Gewicht bleibt hinten → Ball wird kurz"],
+  weg:"Anwerfen–Schlagen mit dem Partner: A wirft unterhand an, B spielt Vorhand zurück in As Hände. Dann Cross-Duelle mit Hütchen-Zielzonen hinter der T-Linie („Tiefencheck“).",
+  beleg:"Team-Skript „Ballwechsel in Gang halten“, 13.05.2026 (Theorieinput Vorhand/Rückhand); Born, P., Grambow, R. &amp; Meffert, D. (2025). <i>Tennis — das Praxisbuch für Studium, Training und Freizeitsport</i>. Springer Spektrum.",
+  },
+ {name:"Rückhand",img:"img/tech-rueckhand.png",chip:"Grundschlag · 13.05.",
+  steps:["Frühe Drehung der Schultern, Schläger zurückführen","Ein- oder beidhändig — deine Wahl","Treffpunkt leicht vor dem Körper","Schläger kontrolliert nach vorne und oben weiterführen"],
+  knoten:["Auf der gegenüberliegenden Körperseite gespielt","Stabiler Stand + gute Beinarbeit sind entscheidend","Aktive Unterstützung durch den Oberkörper"],
+  fehler:["Schulterdrehung zu spät → Ball wird nur „geschoben“","Treffpunkt zu nah am Körper → kein Raum für den Schwung","Handgelenk klappt weg (v. a. einhändig) → Schlagfläche kippt"],
+  weg:"Erst mit einmal Auftippen, dann direkt. Vorgabe „nur Rückhand“ in der Mauer-Übung: so viele Kontakte wie möglich ohne Fehler, erst Kleinfeld, dann Großfeld.",
+  beleg:"Team-Skript „Ballwechsel in Gang halten“, 13.05.2026; Team-Skript „Gegnerische Punktgewinne vermeiden“, 20.05.2026 (Station „Die Mauer“).",
+  },
+ {name:"Aufschlag",img:"img/tech-aufschlag.png",chip:"Spieleröffnung · 03.06.",
+  steps:["Hammergriff (Continental) — der Griff, mit dem man einen Hammer hält","Auftaktbewegung: Ballwurf hoch und leicht vor den Körper","Rückenkratzposition, dann Streckung nach oben","Treffpunkt im höchsten Punkt, Ausschwung nach vorne"],
+  knoten:["Jeder Ballwechsel beginnt mit einem Aufschlag","<b>Maximal zwei Versuche</b> — beim ersten ist mehr Risiko möglich","Immer diagonal ins gegenüberliegende Aufschlagfeld"],
+  fehler:["Falscher Griff (Vorhandgriff) → Schlagfläche zeigt nach oben, Ball fliegt lang","Ballwurf zu tief oder zu weit hinten → kein Treffpunkt oben","Keine Beinstreckung → Aufschlag nur aus dem Arm","Fußfehler: Grundlinie vor dem Treffpunkt berührt"],
+  weg:"Methodische Reihe: Aufschläge aus der <b>Rucksackposition</b> an der T-Linie → aus der <b>Heiligenscheinposition</b> an der Midcourt-Linie → Auftaktbewegung isoliert an der Grundlinie → kompletter Aufschlag von der Grundlinie. Position an das individuelle Leistungsniveau anpassen, Zielfelder abstecken.",
+  beleg:"Team-Skript „Gegner unter Druck setzen“, 03.06.2026 (Methodische Reihe, Hammergriff, zwei Versuche); Schönborn, R. (2016). <i>Tennis Techniktraining</i>. Meyer &amp; Meyer.",
+  },
+ {name:"Volley",img:"img/tech-volley.png",chip:"Netzspiel · 03.06.",
+  steps:["Kurze Ausholbewegung — fast keine","Schläger vor dem Körper, Handgelenk fest („blocken“)","Schritt nach vorne in den Ball hinein","Kein Ausschwung: der Ball wird abgefangen, nicht geschlagen"],
+  knoten:["Direkt aus der Luft, ohne Bodenkontakt","Ziel: Zeit nehmen — der Gegner kommt nicht hinterher","Im Doppel der Abschlussschlag des Netzspielers"],
+  fehler:["Zu großes Ausholen → Timing weg, Ball fliegt lang","Weiches Handgelenk → Schlagfläche kippt, Ball ins Netz","Stehenbleiben statt Schritt nach vorne","Zu spät ans Netz → Volley von den Füßen aus der Halbdistanz"],
+  weg:"Volley-Duell: nur volley über das Netz, miteinander herausfordern, 3–4 Kontakte pro Spieler, dann Abstand vergrößern. Danach Übungsform: Einwurf, kurzer Cross-Volley auf ein Hütchen (Phase 1 hohe Bälle, Phase 2 tiefe Bälle → Volley-Stopp).",
+  beleg:"Team-Skript „Gegner unter Druck setzen“, 03.06.2026; Team-Skript „Taktiken im Doppel“, 17.06.2026 (Übungsform Volley auf Zielzone); Born et al. (2025), S. 240 (Volley-Duell).",
+  }
+];
+let tI=0;
+window.selTech=function(i){
+  tI=i; const d=TECH[i];
+  for(let j=0;j<4;j++){const b=$("#tc"+j); if(b)b.classList.toggle("acc",j===i);}
+  const img=$("#techImg"), info=$("#techInfo"), steps=$("#techSteps"), bel=$("#techBeleg");
+  if(img){img.src=d.img; img.alt=d.name;}
+  if(info)info.innerHTML='<span class="chip acc">'+d.chip+'</span><h3 class="head" style="font-size:1.15rem;margin:10px 0">'+d.name+'</h3>'+
+    '<h4>Knotenpunkte</h4><ul>'+d.knoten.map(x=>'<li>'+x+'</li>').join("")+'</ul>'+
+    '<h4 style="margin-top:14px;color:var(--bad)">Typische Fehlerbilder</h4><ul>'+d.fehler.map(x=>'<li>'+x+'</li>').join("")+'</ul>'+
+    '<h4 style="margin-top:14px;color:var(--accent)">Vermittlungsweg</h4><p style="font-size:.9rem">'+d.weg+'</p>';
+  if(steps)steps.innerHTML='<div style="font-family:Archivo;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:2px">Bewegungsphasen</div>'+
+    d.steps.map((sx,j)=>'<div class="step"><b>'+(j+1)+'</b>'+sx+'</div>').join("");
+  if(bel)bel.innerHTML='<b>Beleg:</b> '+d.beleg;
+};
+if($("#techImg"))window.selTech(0);
+
+/* ---------------- DOPPEL ---------------- */
+/* Feld: x 30..290, y 30..390, Netz bei y=210. Blau = eigenes Team (unten), Rot = Gegner (oben) */
+const DOP=[
+ {n:"Ausgangsposition",g:"doppel-ausgangsposition",
+  d:"Aufschlag-/Return-Phase. Vier Rollen: <b>S1</b> Aufschläger, <b>S2</b> Netzspieler des Aufschlagteams, <b>S3</b> Returnspieler, <b>S4</b> Netzspieler des Returnteams.",
+  k:["Netzspieler deckt die <b>Longline-Seite</b> ab","Returnspieler beobachten und auf dessen „Reingehen“ spekulieren","<b>Die ersten drei Schläge entscheiden</b>, wer in die Offensive kommt"],
+  p:[[80,360,"S1","b"],[230,250,"S2","b"],[230,60,"S3","r"],[80,170,"S4","r"]],
+  a:[[80,360,230,60,0]]},
+ {n:"Offensiv – Defensiv",g:"doppel-of-def",
+  d:"Eigenes Team beide am Netz, Gegner beide an der Grundlinie. <b>Häufigste Spielsituation im Doppel.</b> Ziel: Druck aufbauen und den Punkt am Netz abschließen.",
+  k:["Viele flache Spinbälle, <b>Crosslob</b> einstreuen","<b>Schneller Ball durch die Mitte</b>","Vermehrt über den <b>schwächeren Volleyspieler</b> gehen","Stellungsspiel auf Partnerhöhe, bei tiefem Volley den <b>Stoppball</b> mitdenken"],
+  p:[[90,250,"S1","b"],[230,250,"S2","b"],[90,60,"S3","r"],[230,60,"S4","r"]],
+  a:[[160,250,160,60,0],[230,250,95,70,1]]},
+ {n:"Offensiv – Offensiv",g:"doppel-of-of",
+  d:"Alle vier am Netz — <b>Tandemstellung</b>. Maximaler Druck, maximale Lob-Anfälligkeit. Es zählt reine Reaktionsgeschwindigkeit.",
+  k:["Hoher Volley: <b>flach durch die Mitte oder auf den Körper</b>","Kurz cross, falls der Gegner zurückweicht","Tiefer Volley: <b>Volley-Lob</b> oder weich auf die Füße","Extrem hohe Wachsamkeit — <b>immer mit dem Lob rechnen</b>"],
+  p:[[90,250,"S1","b"],[230,250,"S2","b"],[90,165,"S3","r"],[230,165,"S4","r"]],
+  a:[[230,250,105,175,0],[90,165,160,255,1]]},
+ {n:"Offensiv – Neutral",g:"doppel-of-neutral",
+  d:"Eigenes Team am Netz, der Gegner steht gemischt bzw. im Übergang. Die Aufgabe: den Gegner <b>nicht ins Sortieren kommen lassen</b> und die halbe Chance sofort nutzen.",
+  k:["Auf den Spieler im Übergang spielen — <b>auf die Füße</b>","Den freien Raum zwischen beiden Gegnern angreifen","Nach dem Angriffsball geschlossen nachrücken"],
+  p:[[90,250,"S1","b"],[230,250,"S2","b"],[80,60,"S3","r"],[220,160,"S4","r"]],
+  a:[[160,250,215,155,0]]},
+ {n:"Defensiv – Defensiv",g:"doppel-def-def",
+  d:"Beide an der Grundlinie. Defensivhaltung gegen starke Angreifer oder nach einem Lob. Ziel: <b>Situation stabilisieren</b> und zurück in die Of.–Def.-Position.",
+  k:["Hoch und lang spielen — Zeit gewinnen","Kein Winner-Versuch aus der Defensive (<b>rote Situation!</b>)","Gemeinsam verschieben, keine Lücke in der Mitte"],
+  p:[[90,360,"S1","b"],[230,360,"S2","b"],[90,60,"S3","r"],[230,60,"S4","r"]],
+  a:[[160,360,160,60,1]]},
+ {n:"Neutral über Diagonale",g:"doppel-neutral-diagonale",
+  d:"Gespielt wird cross. Die Diagonale ist der <b>längste und damit sicherste Weg</b> — hier wird der Punkt vorbereitet, nicht beendet.",
+  k:["Cross halten, bis sich eine Lücke öffnet","Der Netzspieler lauert auf den zu kurzen Cross","Erst bei klarem Vorteil auf longline wechseln"],
+  p:[[80,340,"S1","b"],[230,250,"S2","b"],[230,80,"S3","r"],[80,170,"S4","r"]],
+  a:[[80,340,232,78,0]]},
+ {n:"Neutral parallel",g:"doppel-neutral-parallel",
+  d:"Gespielt wird longline. Der <b>kürzeste Weg</b> — hohes Risiko, weil der gegnerische Netzspieler genau dort steht.",
+  k:["Nur mit Tempo und Präzision sinnvoll","Überraschungsmoment gegen den lauernden Netzspieler","Fehlgeht der Ball, ist der Punkt sofort weg"],
+  p:[[80,340,"S1","b"],[230,250,"S2","b"],[80,80,"S3","r"],[230,170,"S4","r"]],
+  a:[[80,340,80,82,0]]}
+];
+let dI=0, dAnim=null;
+(function initDop(){
+  const svg=$("#dopSvg"), btns=$("#dopBtns"); if(!svg)return;
+  svg.appendChild(el("rect",{x:0,y:0,width:320,height:420,rx:12,fill:"#0e2c1c"}));
+  svg.appendChild(el("rect",{x:30,y:30,width:260,height:360,fill:"none",stroke:"#fff","stroke-width":1.6,opacity:".55"}));
+  svg.appendChild(el("line",{x1:62,y1:30,x2:62,y2:390,stroke:"#fff","stroke-width":1,opacity:".28"}));
+  svg.appendChild(el("line",{x1:258,y1:30,x2:258,y2:390,stroke:"#fff","stroke-width":1,opacity:".28"}));
+  svg.appendChild(el("line",{x1:62,y1:112,x2:258,y2:112,stroke:"#fff","stroke-width":1,opacity:".28"}));
+  svg.appendChild(el("line",{x1:62,y1:308,x2:258,y2:308,stroke:"#fff","stroke-width":1,opacity:".28"}));
+  svg.appendChild(el("line",{x1:160,y1:112,x2:160,y2:308,stroke:"#fff","stroke-width":1,opacity:".28"}));
+  svg.appendChild(el("rect",{x:22,y:207,width:276,height:6,fill:"#dfe7ea",opacity:".9",rx:2}));
+  svg.appendChild(el("g",{id:"dopArrows"}));
+  svg.appendChild(el("g",{id:"dopPlayers"}));
+  const defs=el("defs");
+  const mk=el("marker",{id:"ah",markerWidth:"7",markerHeight:"7",refX:"5",refY:"3.2",orient:"auto"});
+  mk.appendChild(el("path",{d:"M0,0 L6,3.2 L0,6.4 Z",fill:"var(--accent)"}));
+  defs.appendChild(mk); svg.appendChild(defs);
+  DOP.forEach((d,i)=>{
+    const b=document.createElement("button");
+    b.className="btn sm"+(i===0?" acc":""); b.id="dp"+i; b.textContent=d.n;
+    b.onclick=()=>selDop(i);
+    if(btns)btns.appendChild(b);
+  });
+})();
+window.selDop=function(i){
+  dI=i; const d=DOP[i];
+  DOP.forEach((_,j)=>{const b=$("#dp"+j); if(b)b.classList.toggle("acc",j===i)});
+  const P=$("#dopPlayers"), A=$("#dopArrows"), info=$("#dopInfo");
+  if(!P||!A)return;
+  P.innerHTML=""; A.innerHTML="";
+  d.p.forEach(p=>{
+    P.appendChild(el("circle",{cx:p[0],cy:p[1],r:11,fill:p[3]==="b"?"#60a5fa":"#f87171",opacity:".95"}));
+    const t=el("text",{x:p[0],y:p[1]+4,"text-anchor":"middle","font-size":"9","font-weight":"700",fill:"#0b1020","font-family":"Archivo"});
+    t.textContent=p[2]; P.appendChild(t);
+  });
+  d.a.forEach(a=>{
+    A.appendChild(el("line",{x1:a[0],y1:a[1],x2:a[2],y2:a[3],stroke:"var(--accent)","stroke-width":2.2,
+      "stroke-dasharray":a[4]?"6 5":"none","marker-end":"url(#ah)",opacity:".9"}));
+  });
+  if(info)info.innerHTML='<span class="chip acc">Doppel-Situation '+(i+1)+'/'+DOP.length+'</span>'+
+    '<h3 class="head" style="font-size:1.1rem;margin:10px 0">'+d.n+'</h3>'+
+    '<p style="color:rgba(255,255,255,.82);font-size:.92rem">'+d.d+'</p>'+
+    '<h4 style="margin-top:14px;color:var(--accent)">Lösung</h4><ul>'+d.k.map(x=>'<li>'+x+'</li>').join("")+'</ul>'+
+    '<p style="margin-top:12px;font-size:.78rem;color:var(--faint)">Blau = eigenes Team · Rot = Gegner · durchgezogen = Schlag · gestrichelt = Lob</p>';
+  const gi=$("#dopGfxImg"), gc=$("#dopGfxCap");
+  if(gi&&d.g){gi.src="img/gfx/"+d.g+".jpg"; gi.alt="Originalgrafik: "+d.n;}
+  if(gc)gc.innerHTML='<b>Originalgrafik „'+d.n+'"</b> — Brunert/Feddermann, <i>Trainingsplaner Tennis</i> (CD), Spielform „Doppeltaktik". Klick zum Vergrößern.';
+};
+if($("#dopSvg"))window.selDop(0);
+
+/* ---------------- Zahlen-Drill ---------------- */
+const DRILL=[
+ ["Länge eines Tennisplatzes?","23,77 m","ITF Rule 1"],
+ ["Breite Einzel / Doppel?","8,23 / 10,97 m","ITF Rule 1"],
+ ["Netzhöhe Mitte / Pfosten?","0,914 / 1,07 m","ITF Rule 1"],
+ ["Abstand Aufschlaglinie zum Netz?","6,40 m","ITF Rule 1"],
+ ["Padel-Court?","20 × 10 m","Übersicht Rückschlagspiele"],
+ ["Pickleball-Feld (Seminar)?","13,4 × 6 m","Übersicht Rückschlagspiele"],
+ ["Pickleball — Punkte pro Satz?","11 (mind. 2 Vorsprung)","Protokoll 29.04."],
+ ["Touchtennis-Feld?","12 × 6 m","Übersicht Rückschlagspiele"],
+ ["Touchtennis — Schläger / Ball?","21 Zoll / Ø 8 cm","Protokoll 29.04."],
+ ["Streetracket — Felder?","3 × (2 × 2 m)","Übersicht Rückschlagspiele"],
+ ["Tamburello Indoor?","34 × 16 m","Übersicht Rückschlagspiele"],
+ ["Tamburello — Schlägerdurchmesser?","24–28 cm","Binnenbruck 2017"],
+ ["Speckbrett — Punkte pro Satz?","21","Übersicht Rückschlagspiele"],
+ ["Speckbrett — kostenlose Plätze in Münster?","27","Protokoll 29.04."],
+ ["Anteil unnötiger Fehler?","ca. 70 %","Skript 20.05., Prinzip 1"],
+ ["Wie viele taktische Handlungsziele?","4","Input integrative Vermittlung"],
+ ["Phasen der taktischen Handlung?","5","Skript 20.05."],
+ ["Dauer der Klausur?","60 Minuten","Veranstaltungsplan"],
+ ["Stufen der Schlagfolge?","10","Veranstaltungsplan"],
+ ["Fehlerfreie Schläge pro Stufe / Versuche?","6 bei 3 Versuchen","Veranstaltungsplan"],
+ ["Länge des Demo-Videos?","3 Minuten (je 1 Min)","Veranstaltungsplan"],
+ ["Mindest-Anwesenheit?","80 %","Veranstaltungsplan"],
+ ["Aufschlagversuche im Tennis?","2","Skript 03.06."],
+ ["DTB-Kinderkonzept — Stufen?","Blau, Rot, Orange, Grün","Vermittlungskonzepte Teil 2"]
+];
+(function drill(){
+  const box=$("#drill"); if(!box)return;
+  DRILL.forEach(d=>{
+    const c=document.createElement("div");
+    c.className="flip anim";
+    c.innerHTML='<div class="flip-in"><div class="flip-f liquid-glass"><p>'+d[0]+'</p></div>'+
+      '<div class="flip-b liquid-glass"><span class="num-sm">'+d[1]+'</span><small>'+d[2]+'</small></div></div>';
+    c.onclick=()=>c.classList.toggle("on");
+    box.appendChild(c);
+  });
+})();
+
+/* ---------------- QUIZ ---------------- */
+const POOL=[
+ /* ---------- RÜCKSCHLAGSPIELE ---------- */
+ {k:"Spiele",q:"Wie lang und breit ist ein Tennisplatz im Doppel?",o:["23,77 × 10,97 m","23,77 × 8,23 m","20 × 10 m","24 × 11 m"],c:0,b:"ITF Rules of Tennis, Rule 1; Übersicht Rückschlagspiele (Binnenbruck/Brunert)."},
+ {k:"Spiele",q:"Wie groß ist ein Padel-Court?",o:["13,4 × 6 m","20 × 10 m","23,77 × 10,97 m","18 × 8,23 m"],c:1,b:"Übersicht Rückschlagspiele; FIP Padel Regulations (20 × 10 m, ohne Doppelkanal)."},
+ {k:"Spiele",q:"Wo darf man beim Pickleball den Ball nicht direkt aus der Luft schlagen?",o:["Im diagonalen Aufschlagfeld","In der sogenannten Küche am Netz","Hinter der Grundlinie","Auf der Seite des aufschlagenden Teams"],c:1,b:"Team-Protokoll 29.04.2026 (Pickleball, Non-Volley-Zone „Küche“)."},
+ {k:"Spiele",q:"Was besagt die Doppel-Bounce-Regel im Pickleball?",o:["Der Ball darf zweimal aufspringen","Nach dem Aufschlag muss der Ball auf jeder Seite einmal aufspringen, bevor volley gespielt werden darf","Man hat zwei Aufschlagversuche","Jeder Punkt zählt doppelt"],c:1,b:"Team-Protokoll 29.04.2026 (Pickleball)."},
+ {k:"Spiele",q:"Was passiert beim Pickleball, wenn das aufschlagende Team einen Fehler macht?",o:["Das gegnerische Team erhält einen Punkt","Der Ballwechsel wird wiederholt","Es gibt keinen direkten Punkt, sondern der Aufschlag wechselt","Das aufschlagende Team verliert einen Punkt"],c:2,b:"Team-Protokoll 29.04.2026: „Fehler: kein Punkt, sondern Aufschlagwechsel.“"},
+ {k:"Spiele",q:"Bis wie viel Punkte wird ein Pickleball-Satz gespielt?",o:["11 (mind. 2 Punkte Abstand)","15","21","7"],c:0,b:"Übersicht Rückschlagspiele; Team-Protokoll 29.04.2026."},
+ {k:"Spiele",q:"Wie lautet die Punkteansage im Pickleball-Doppel?",o:["Nur der eigene Punktestand","Zwei Zahlen: eigene – Gegner","Drei Zahlen: eigene – Gegner – Aufschläger (1 oder 2)","Es wird nicht angesagt"],c:2,b:"Team-Protokoll 29.04.2026 (Pickleball, Zählweise)."},
+ {k:"Spiele",q:"Team A führt gegen Team B mit 7:6 (Speckbrett). Wer schlägt auf?",o:["Team A von rechts","Team A von links","Team B von rechts","Team B von links"],c:2,b:"Team-Protokoll 29.04.2026: Es schlägt das Team auf, das den letzten Ballwechsel verloren hat; bei gerader Punktzahl des Aufschlagteams von rechts (Team B hat 6)."},
+ {k:"Spiele",q:"Woher stammt Speckbrett ursprünglich?",o:["Aus dem Münsterland","Aus der Schwarzwald-Region","Aus Berlin","Aus Norditalien"],c:1,b:"Team-Protokoll 29.04.2026 („Ursprung: Schwarzwald Region“)."},
+ {k:"Spiele",q:"Welche Linie fehlt auf einem Speckbrett-Feld?",o:["Die Grundlinie","Die T-Linie (Aufschlaglinie)","Die Seitenlinie","Das Mittelzeichen"],c:1,b:"Team-Protokoll 29.04.2026: „Spielfeld: keine T-Linie, gleiche Länge eines Tennisplatzes.“"},
+ {k:"Spiele",q:"Wie viele kostenlose Speckbrettplätze gibt es in Münster?",o:["7","17","27","47"],c:2,b:"Team-Protokoll 29.04.2026 (Speckbrett)."},
+ {k:"Spiele",q:"Wie groß ist das Touchtennis-Feld?",o:["12 m lang, 6 m breit","24 m lang, 12 m breit","Quadrat mit 8 m Seitenlänge","20 m lang, 2 m breit"],c:0,b:"Team-Protokoll 29.04.2026; Übersicht Rückschlagspiele."},
+ {k:"Spiele",q:"Welche Merkmale hat ein Touchtennis-Ball?",o:["Wie ein normaler Tennisball","Gelber Softball mit Ø 8 cm","Harter Plastikball mit Löchern","Rot-gelber Schaumstoffball, Ø 12 cm"],c:1,b:"Team-Protokoll 29.04.2026 (Touchtennis)."},
+ {k:"Spiele",q:"Wie lang sind Touchtennis-Sätze?",o:["Bis 6 Spiele wie im Tennis","Bis 4 Spiele, Tie-Break bis 5 bei 4:4","Bis 11 Punkte","Bis 21 Punkte"],c:1,b:"Team-Protokoll 29.04.2026; Übersicht Rückschlagspiele."},
+ {k:"Spiele",q:"Welches Spiel wird auf drei Feldern à 2 × 2 m gespielt, immer nach oben, ohne Volley?",o:["Tamburello","Speckbrett","Streetracket","Touchtennis"],c:2,b:"Übersicht Rückschlagspiele; Ablauf Tamburello/Streetracket, 24.06.2026."},
+ {k:"Spiele",q:"Wie beschreibt Binnenbruck (2017) den Tamburello-Schläger?",o:["Als „Wolf im Schafspelz“ — hoher Aufforderungscharakter, aber unberechenbare Eigendynamik","Als reines Grundschulgerät","Als Ersatz für den Tennisschläger im Wettkampf","Als zu schwer für Kinder"],c:0,b:"Binnenbruck, A. (2017). Wolf im Schafspelz: der Tamburello-Schläger."},
+ {k:"Spiele",q:"Welcher Schläger hat keinen Schaft — der Griff sitzt direkt am Rahmen?",o:["Speckbrett","Tamburello","Street Racket","Pickleball-Paddle"],c:1,b:"Binnenbruck, A. (2017): Griff direkt am Rahmen, Daumen liegt auf der Nylonmembran, Ø 24–28 cm."},
+ {k:"Spiele",q:"Bis wie viel Punkte gehen Tamburello- und Speckbrett-Gewinnsätze?",o:["11","15","21","25"],c:2,b:"Übersicht Rückschlagspiele (beide: Gewinnsätze bis 21 Punkte)."},
+ {k:"Spiele",q:"Welches Rückschlagspiel wird laut Seminar-Übersicht ausschließlich im Doppel gespielt?",o:["Streetracket","Tamburello","Padel","Tennis"],c:2,b:"Übersicht Rückschlagspiele (Padel: Teamstärke Doppel)."},
+ {k:"Spiele",q:"Welche Teamstärken sind beim Tamburello vorgesehen?",o:["Nur 1:1","Nur Doppel","1:1, 2:2, 3:3 und 5:5","Nur 5:5"],c:2,b:"Übersicht Rückschlagspiele."},
+ {k:"Spiele",q:"Welches Maß hat das Tennis-Kleinfeld laut Seminar-Übersicht?",o:["10,97 × 5,48 m","18,00 × 8,23 m","12 × 6 m","13,4 × 6 m"],c:0,b:"Übersicht Rückschlagspiele (Kleinfeld 10,97 × 5,48 m; Midcourt 18,00 × 8,23 m)."},
+
+ /* ---------- REGELN ---------- */
+ {k:"Regeln",q:"Wie hoch ist das Tennisnetz in der Mitte?",o:["0,88 m","0,914 m","1,07 m","1,20 m"],c:1,b:"ITF Rules of Tennis, Rule 1 — 0,914 m Mitte, 1,07 m an den Netzpfosten."},
+ {k:"Regeln",q:"Wie breit ist ein Tennisplatz im Einzel?",o:["8,23 m","10,97 m","6,40 m","5,48 m"],c:0,b:"ITF Rules of Tennis, Rule 1 (Einzel 8,23 m; Doppelkanal je 1,37 m)."},
+ {k:"Regeln",q:"Wie weit ist die Aufschlaglinie vom Netz entfernt?",o:["5,48 m","6,40 m","8,23 m","11,89 m"],c:1,b:"ITF Rules of Tennis, Rule 1."},
+ {k:"Regeln",q:"Wie viele Aufschlagversuche hat man im Tennis?",o:["Einen","Zwei","Drei","Beliebig viele bis zum Netzroller"],c:1,b:"Team-Skript 03.06.2026 („maximal 2 Versuche, beim ersten mehr Risiko möglich“); ITF Rules of Tennis, Rule 19."},
+ {k:"Regeln",q:"Der Ball landet auf der Linie. Was gilt?",o:["Aus","Drin — die Linie gehört zum Feld","Wiederholung","Nur beim Aufschlag drin"],c:1,b:"ITF Rules of Tennis, Rule 22 (Ball touches a line = good)."},
+ {k:"Regeln",q:"Was ist ein „Let“ beim Aufschlag?",o:["Ein Fehler","Der Aufschlag berührt das Netz und landet korrekt im Feld → Wiederholung","Ein Punkt für den Aufschläger","Ein Fußfehler"],c:1,b:"ITF Rules of Tennis (Let)."},
+ {k:"Regeln",q:"Was ist ein Foot Fault?",o:["Der Ball trifft den Fuß","Der Aufschläger berührt vor dem Ballkontakt die Grundlinie oder das Feld","Der Returnspieler steht zu weit vorne","Man tritt beim Volley über die T-Linie"],c:1,b:"ITF Rules of Tennis, Rule 18 (Foot Fault)."},
+ {k:"Regeln",q:"Bei 40:40 wird auf … gestellt.",o:["Vorteil","Einstand (Deuce)","Tiebreak","Satzball"],c:1,b:"ITF Rules of Tennis, Rule 5 (Score in a Game)."},
+ {k:"Regeln",q:"Ab welchem Spielstand wird im Satz ein Tiebreak gespielt?",o:["5:5","6:5","6:6","7:6"],c:2,b:"ITF Rules of Tennis, Rules 6–7."},
+ {k:"Regeln",q:"Wie wird laut Seminar-Übersicht im Tennis gezählt?",o:["Immer nach offiziellen ITF-Regeln","2 Sätze bis 15 Punkte bzw. 2 Gewinnsätze ab 2:2, 3. Satz Match-Tie-Break","Bis 11 Punkte","Bis 21 Punkte"],c:1,b:"Übersicht Rückschlagspiele (Seminar-Zählweise Tennis)."},
+ {k:"Regeln",q:"Der Aufschlag wird gespielt …",o:["longline ins gegenüberliegende Feld","diagonal ins gegenüberliegende Aufschlagfeld","frei wählbar","immer von rechts"],c:1,b:"ITF Rules of Tennis, Rule 16; gilt analog für Pickleball und Speckbrett."},
+ {k:"Regeln",q:"Wie breit ist ein Aufschlagfeld?",o:["4,115 m","5,48 m","6,40 m","8,23 m"],c:0,b:"ITF Rules of Tennis, Rule 1 (Aufschlagfeld 6,40 m tief × 4,115 m breit)."},
+
+ /* ---------- VERMITTLUNG ---------- */
+ {k:"Vermittlung",q:"Welche Unterscheidung trifft man bei den Vermittlungskonzepten?",o:["Kindgerecht vs. erwachsenengerecht","Tennisspezifische vs. unspezifische (integrative) Vermittlung","Technik vs. Taktik","Schule vs. Verein"],c:1,b:"Zusammenfassung Stunde 06.05.2026; Vermittlungskonzepte Teil 2 (Brunert)."},
+ {k:"Vermittlung",q:"Welche Stufen hat das DTB-Kinderkonzept?",o:["Weiß, Blau, Rot, Orange, Grün, Gelb","Blau, Rot, Orange, Grün","A, B, C, D, E","Rot, Orange, Grün"],c:1,b:"Vermittlungskonzepte Teil 2; Zusammenfassung 06.05.2026. Die sechs Farbstufen mit Rollen gehören zum Münsteraner Modell."},
+ {k:"Vermittlung",q:"Welche drei Basiskompetenzen unterscheidet die Ballschule Tennis?",o:["Kraft, Ausdauer, Schnelligkeit","Koordinative (übergreifend), perzeptiv-motorische (tennisgerichtet), technisch-taktische (tennisspezifisch)","Blau, Rot, Orange","Wahrnehmung, Entscheidung, Ausführung"],c:1,b:"Roth, C., Ebert, M. &amp; Roth, K. (2022). Ballschule Tennis; Vermittlungskonzepte Teil 2."},
+ {k:"Vermittlung",q:"Wofür ist „Flugbahn des Balles erkennen“ ein Beispiel?",o:["Koordinative Basiskompetenz (A)","Perzeptiv-motorische Basiskompetenz (B)","Technisch-taktische Basiskompetenz (C)","Konditionelle Fähigkeit"],c:1,b:"Vermittlungskonzepte Teil 2 (Ballschule Tennis, Ebene B — tennisgerichtet)."},
+ {k:"Vermittlung",q:"Welche Rolle hat der Trainer bei „Tennis ist ROT“ im Münsteraner Modell?",o:["Animateur","Schneider","Architekt","Goldschmied"],c:2,b:"Vermittlungskonzepte Teil 2: WEISS = Animateur, BLAU = Schneider, ROT = Architekt (6–8 J.), ORANGE = Konditor, GRÜN = Goldschmied, GELB = Begleiter."},
+ {k:"Vermittlung",q:"Welche Altersstufe gehört im Münsteraner Modell zu „Tennis ist GELB“?",o:["3–5 Jahre","6–8 Jahre","10–11 Jahre","ab 12–18+ Jahre"],c:3,b:"Vermittlungskonzepte Teil 2 (GELB = Begleiter/Entwicklungscoach)."},
+ {k:"Vermittlung",q:"Wofür steht LTAD?",o:["Long Term Athlete Development","Learning Tennis And Doubles","Long Training After Drills","Lehrplan Tennis Anfänger Deutschland"],c:0,b:"Vermittlungskonzepte Teil 2; Zusammenfassung 06.05.2026."},
+ {k:"Vermittlung",q:"Welche LTAD-Stufe meint „Individual-taktische Perfektion einsetzen“?",o:["A Grundlagen","C Training zum Trainieren","D Training, um an Wettkämpfen teilzunehmen","E Training, um zu gewinnen"],c:2,b:"Vermittlungskonzepte Teil 2 (LTAD, Stufe D)."},
+ {k:"Vermittlung",q:"Wer sind die Vertreter der integrativen Sportspielvermittlung?",o:["DTB, Ballschule Tennis, Münsteraner Modell","Heidelberger Ballschule, Teaching Games for Understanding, Kasseler Vermittlungsmodell","Swiss Tennis, ITF, DTB","Wein, Memmert, Schönborn"],c:1,b:"Input integrative Sportspielvermittlung (Binnenbruck/Brunert)."},
+ {k:"Vermittlung",q:"Was besagt das Prinzip „Was vor Wie“?",o:["Erst Kondition, dann Technik","Erst die Spielsituation verstehen, dann die technische Ausführung","Erst Regeln, dann Taktik","Erst Einzel, dann Doppel"],c:1,b:"Spielintelligenz in 4 Phasen (Wein); Input integrative Sportspielvermittlung."},
+ {k:"Vermittlung",q:"Welche vier Phasen hat das Spielintelligenzmodell (Wein)?",o:["Wahrnehmung – Verstehen/Interpretieren – Entscheidungsfindung – Technische Ausführung","Aufwärmen – Üben – Spielen – Reflektieren","Sicherheit – Platzierung – Druck – Abschluss","Sehen – Laufen – Schlagen – Bewerten"],c:0,b:"Input integrative Sportspielvermittlung (Spielintelligenzmodell nach Wein, H.)."},
+ {k:"Vermittlung",q:"Welche Prinzipien nennt die Heidelberger Ballschule?",o:["Leistung, Disziplin, Ehrgeiz, Wettkampf","Entwicklungsgemäßheit, Vielseitigkeit, Freudbetontheit, spielerisch-unangeleitetes Lernen","Technik, Taktik, Kondition, Koordination","Sehen, Verstehen, Entscheiden, Handeln"],c:1,b:"Input Heidelberger Ballschule („Kinder sind keine verkleinerten Erwachsenen“ usw.)."},
+ {k:"Vermittlung",q:"Wie ordnet die Heidelberger Ballschule Tennis ein?",o:["Torschussspiel","Wurfspiel","Rückschlagspiel Einzel","Rückschlagspiel Mannschaft"],c:2,b:"Input Heidelberger Ballschule (Zielschussspiele → Wurf-, Torschuss-, Rückschlagspiele Einzel/Mannschaft)."},
+ {k:"Vermittlung",q:"Was ist Low-T-Ball?",o:["Tennis mit tieferem Netz","Der Ball wird unter einem Querbalken hindurch gespielt statt über ein Netz","Tennis mit weichen roten Bällen","Ein Turnierformat für Großgruppen"],c:1,b:"Zusammenfassung 06.05.2026; Tennis ist WEISS 2, KK 41."},
+ {k:"Vermittlung",q:"Warum eignet sich Low-T-Ball für die Schule?",o:["Weil es teuer und exklusiv ist","Weil komplexe Flugkurven entfallen → sofortige Erfolgserlebnisse, geringes Verletzungsrisiko, günstiger Aufbau","Weil es nur mit Vereinsspielern funktioniert","Weil es die Kondition maximal fordert"],c:1,b:"Zusammenfassung Stunde 06.05.2026 (Musterantwort)."},
+ {k:"Vermittlung",q:"Miteinander oder gegeneinander in der Tenniseinführung?",o:["Gegeneinander — Wettkampf motiviert","Miteinander (ggf. im Doppel), um den Ball in Gang zu halten, Komplexität und Druck zu reduzieren","Egal","Erst gegeneinander, dann miteinander"],c:1,b:"Zusammenfassung Stunde 06.05.2026 (Musterantwort)."},
+ {k:"Vermittlung",q:"Wie baust du Tennis in einer normalen Sporthalle auf?",o:["Volleyballfeld dritteln","Nur ein Feld längs","Basketballfeld halbieren","Gar nicht — Tennis braucht den Außenplatz"],c:0,b:"Zusammenfassung Stunde 06.05.2026 (Musterantwort)."},
+
+ /* ---------- TAKTIK ---------- */
+ {k:"Taktik",q:"Wie lautet die Reihenfolge der vier taktischen Handlungsziele?",o:["Punkte erzielen → Druck setzen → Punkte vermeiden → Ballwechsel halten","Ballwechsel in Gang halten → Gegnerische Punktgewinne vermeiden → Gegner unter Druck setzen → Eigene Punkte erzielen","Technik → Taktik → Kondition → Wettkampf","Sicherheit → Tempo → Rotation → Winner"],c:1,b:"Input integrative Sportspielvermittlung; Termine 13.05.–10.06.2026."},
+ {k:"Taktik",q:"Ca. wie viel Prozent der Punkte im Tennis fallen durch unnötige Fehler?",o:["ca. 30 %","ca. 50 %","ca. 70 %","ca. 90 %"],c:2,b:"Team-Skript „Gegnerische Punktgewinne vermeiden“, 20.05.2026, Taktisches Prinzip 1."},
+ {k:"Taktik",q:"Was ist das erste taktische Prinzip?",o:["Eigene Stärken einsetzen","Vermeidung eigener Fehler","Gegnerische Schwäche ausnutzen","Geometrie und Zonen berücksichtigen"],c:1,b:"Team-Skript 20.05.2026 (Taktische Prinzipien 1–5)."},
+ {k:"Taktik",q:"Welche fünf Phasen hat die taktische Handlung?",o:["Sehen – Laufen – Schlagen – Treffen – Punkten","Antizipation/Wahrnehmung – Beurteilung – Entscheidung – Schlagausführung – Bewertung","Aufwärmen – Üben – Spielen – Turnier – Reflexion","Rot – Gelb – Grün – Winner – Fehler"],c:1,b:"Team-Skript 20.05.2026, Abschnitt „Übersicht“."},
+ {k:"Taktik",q:"Woran orientiert sich die Entscheidung in Phase 3?",o:["Primär an den gegnerischen Stärken","Primär an den eigenen Stärken und Schwächen, erst sekundär an den gegnerischen","Ausschließlich am Spielstand","Am Publikum"],c:1,b:"Team-Skript 20.05.2026 (Phase 3 der taktischen Handlung)."},
+ {k:"Taktik",q:"Was ist ein Forced Error?",o:["Ein leichter Fehler ohne Druck","Ein Fehler des Gegners, weil du Druck erzeugt hast","Ein Schlag, den der Gegner nicht mehr erreicht","Ein Doppelfehler beim Aufschlag"],c:1,b:"Team-Skript 10.06.2026: Winner = Gegner erreicht den Ball nicht; Forced Error = Fehler wegen erzeugtem Druck; Unforced Error = leichter Fehler ohne Druck."},
+ {k:"Taktik",q:"Was ist in einer „roten Situation“ (Ampelprinzip) taktisch klug?",o:["Harter Winner die Linie entlang","Stoppball","Hoher, langer Ball (z. B. cross), um Zeit zu gewinnen","Serve and Volley"],c:2,b:"Bühler et al. (2012), Player Development, S. 4; Team-Skript 10.06.2026."},
+ {k:"Taktik",q:"Was ist das Ziel der gelben Situation (Ampelprinzip)?",o:["Den Punkt sofort beenden","Den Gegner durch Platzierung bewegen und sich eine grüne Situation erarbeiten","Zeit gewinnen und zurück in Position kommen","Ans Netz gehen"],c:1,b:"Bühler et al. (2012), S. 4."},
+ {k:"Taktik",q:"Was ist der häufigste Anfängerfehler im Ampelprinzip?",o:["Zu passiv in der grünen Situation","Aus der roten Situation heraus einen Winner versuchen","Zu viel Slice","Zu früh ans Netz"],c:1,b:"Team-Skript 10.06.2026 (Bühler et al., 2012, S. 4)."},
+ {k:"Taktik",q:"Wo positionierst du dich nach deinem Schlag?",o:["Immer auf dem Mittelzeichen","Auf der Winkelhalbierenden der möglichen gegnerischen Flugbahnen","Immer einen Meter hinter der Grundlinie","Auf der Seite, auf der du geschlagen hast"],c:1,b:"DTB (2001), Tennis-Lehrplan Band 1, S. 55; Team-Skript 10.06.2026."},
+ {k:"Taktik",q:"Was gehört NICHT zu den fünf Taktikelementen eines Schlages?",o:["Rhythmus","Platzierung","Schlägerbespannung","Flughöhe"],c:2,b:"Vorgaben 13.05. / 03.06.2026: Rhythmus, Platzierung, Tempo, Flughöhe, ggf. Rotation."},
+ {k:"Taktik",q:"Welche Einflussgrößen nennt das Skript für „Gegner unter Druck setzen“?",o:["Kraft, Ausdauer, Beweglichkeit","Zeit, Raum, Risiko und Schlagdruck (Force)","Technik, Taktik, Mentales","Aufschlag, Return, Volley"],c:1,b:"Team-Skript „Gegner unter Druck setzen“, 03.06.2026."},
+ {k:"Taktik",q:"Wie setzt man den Gegner unter Zeitdruck?",o:["Hoch und langsam spielen","Schnelle Schläge, früh im Aufsteigen treffen, Netzangriffe, Stoppball","Nur cross spielen","Auf den zweiten Aufschlag warten"],c:1,b:"Team-Skript 20.05.2026 (Maßnahmen zu Prinzip 4)."},
+ {k:"Taktik",q:"Was heißt „gegen den Fuß spielen“?",o:["Auf die Füße des Gegners zielen","Gegen die Laufrichtung spielen, um ihn aus dem Gleichgewicht zu bringen","Einen Stoppball spielen","Longline spielen"],c:1,b:"Team-Skript 20.05.2026 (Gegner aus dem Gleichgewicht bringen)."},
+ {k:"Taktik",q:"Was ist die Grundstrategie eines defensiven Grundlinienspielers?",o:["Serve-and-Volley und Angriffschancen erkennen","Gute Fitness, solide Grundschläge, präzise Passierschläge — Kämpfertyp","Schnelle erste Aufschläge und maximales Risiko","Ständige Stoppbälle"],c:1,b:"Team-Skript 20.05.2026 (Grundstrategien)."},
+ {k:"Taktik",q:"Wie definiert Schönborn (2012) Taktik?",o:["Als angeborene Spielintelligenz","Als gezielte Anwendung vorbereiteter Handlungen zur Realisierung der Strategie","Als Summe aller Techniken","Als Match-Plan vor dem Spiel"],c:1,b:"Schönborn, R. (2012), S. 27–28, zitiert im Team-Skript 20.05.2026."},
+ {k:"Taktik",q:"Was ist die sicherste Bahn für den Ballwechsel?",o:["Longline, flach über das Netz","Cross, hoch und lang — der längste Weg","Stoppball","Der Volley"],c:1,b:"Team-Skript 13.05.2026 (Ballwechsel in Gang halten: Konstanz, Ballkontrolle, Flughöhe)."},
+
+ /* ---------- TECHNIK ---------- */
+ {k:"Technik",q:"Wo liegt der Treffpunkt bei der Vorhand?",o:["Neben dem Körper","Vor dem Körper","Hinter dem Körper","Über dem Kopf"],c:1,b:"Team-Skript 13.05.2026 (Theorieinput Vorhand/Rückhand)."},
+ {k:"Technik",q:"Wie verläuft die Schlagbewegung der Vorhand?",o:["Von oben nach unten","Von hinten unten nach vorne oben","Waagerecht von hinten nach vorne","Von vorne nach hinten"],c:1,b:"Team-Skript 13.05.2026: Ausschwung locker über die gegenüberliegende Schulter."},
+ {k:"Technik",q:"Welcher Griff wird für den Aufschlag gelehrt?",o:["Vorhandgriff (Western)","Hammergriff (Continental)","Beidhändiger Rückhandgriff","Extremer Semi-Western"],c:1,b:"Team-Skript „Gegner unter Druck setzen“, 03.06.2026 („Hammergriff zeigen und vormachen“)."},
+ {k:"Technik",q:"Wie lautet die methodische Reihe für den Aufschlag im Seminar?",o:["Direkt von der Grundlinie mit vollem Bewegungsablauf","Rucksackposition an der T-Linie → Heiligenscheinposition an der Midcourt-Linie → Auftaktbewegung isoliert → Aufschlag von der Grundlinie","Erst Volley, dann Aufschlag","Nur Ballwurf üben"],c:1,b:"Team-Skript 03.06.2026 (Methodische Reihe Aufschlag)."},
+ {k:"Technik",q:"Was ist beim Volley entscheidend?",o:["Weites Ausholen und großer Ausschwung","Kurze Ausholbewegung, festes Handgelenk, Schritt nach vorne — der Ball wird abgefangen","Maximales Tempo aus dem Handgelenk","Topspin aus der Hüfte"],c:1,b:"Team-Skript 03.06.2026; Born et al. (2025), S. 240 (Volley-Duell)."},
+ {k:"Technik",q:"Welches Fehlerbild ist typisch für den Aufschlag?",o:["Zu kurzer Ausschwung","Ballwurf zu tief oder zu weit hinten → kein Treffpunkt oben","Zu viel Beinarbeit","Zu frühe Schulterdrehung"],c:1,b:"Team-Skript 03.06.2026; Schönborn, R. (2016). Tennis Techniktraining."},
+ {k:"Technik",q:"Wie kann die Rückhand ausgeführt werden?",o:["Nur einhändig","Nur beidhändig","Ein- oder beidhändig — freie Wahl","Immer mit Slice"],c:2,b:"Team-Skript 13.05.2026 (Theorieinput Rückhand)."},
+ {k:"Technik",q:"Was gehört zur Bein- und Rumpfarbeit der Grundschläge?",o:["Gestreckte Knie, Gewicht auf der Ferse","Leicht gebeugte Knie, Gewichtsverlagerung nach vorne, Drehung von Hüfte und Oberkörper","Sprung bei jedem Schlag","Statischer Stand ohne Drehung"],c:1,b:"Team-Skript 13.05.2026 (Theorieinput Vorhand/Rückhand)."},
+ {k:"Technik",q:"Welche Übung gehört zur Phase A (Ballgewöhnung, einzeln)?",o:["Boden-Wand-Spiel","Anwerfen–Schlagen mit Partner","Eierlauf: Ball auf dem Schläger balancieren","Doppel im T-Feld"],c:2,b:"Zusammenfassung 06.05.2026 (Phase A: Eierlauf, Dribbeln, Pfannkuchen)."},
+
+ /* ---------- DOPPEL ---------- */
+ {k:"Doppel",q:"Was unterscheidet eine Spielform von einer Wettkampfform?",o:["Die Spielform hat keinen Gegner","Die Wettkampfform hat mehr Spieler","Die Spielform ist regelmodifiziert (Bonus-/Limitregeln), die Wettkampfform folgt offiziellen Regeln","Die Wettkampfform hat immer einen Tiebreak"],c:2,b:"Team-Skript Doppel 17.06.2026, Theorie-Input A; Brunert 08.07.2026."},
+ {k:"Doppel",q:"Was kennzeichnet eine Übungsform?",o:["Kein Gegner, keine Punkte — vereinfachte Situation, hohe Wiederholungszahl","Gegner mit Bonusregeln","Offizielle Zählweise","Auf- und Abstieg über mehrere Runden"],c:0,b:"Team-Skript Doppel 17.06.2026, Theorie-Input A."},
+ {k:"Doppel",q:"Ändert ein Tiebreak den Charakter der Organisationsform?",o:["Ja, er macht aus einer Wettkampfform eine Spielform","Nein — er dient nur der Format-/Zeitanpassung","Ja, er macht daraus eine Turnierform","Nur im Doppel"],c:1,b:"Team-Skript Doppel 17.06.2026: „Ein Tiebreak dient lediglich der Format- bzw. Zeitanpassung.“"},
+ {k:"Doppel",q:"Welche Doppel-Aufstellung ist besonders lob-anfällig?",o:["Ausgangsposition","Offensiv–Defensiv","Offensiv–Offensiv (Tandem, beide am Netz)","Defensiv–Defensiv"],c:2,b:"Team-Skript Doppel 17.06.2026: „Beide am Netz. Maximaler Druck. Anfällig für Lobs.“"},
+ {k:"Doppel",q:"Welches ist die häufigste Spielsituation im Doppel?",o:["Offensiv–Offensiv","Offensiv–Defensiv (eine Person am Netz, eine an der Grundlinie)","Defensiv–Defensiv","Alle vier an der Grundlinie"],c:1,b:"Team-Skript Doppel 17.06.2026, Taktikmodell Doppel B.3."},
+ {k:"Doppel",q:"Welche Seite deckt der Netzspieler in der Ausgangsposition ab?",o:["Die Cross-Seite","Die Longline-Seite","Die Mitte","Das Hinterfeld"],c:1,b:"Stundenvorbereitung Doppeltaktik (Sachanalyse); Brunert/Feddermann, Trainingsplaner Tennis."},
+ {k:"Doppel",q:"Wie viele Schläge entscheiden im Doppel, wer in die Offensive kommt?",o:["Die ersten drei","Die ersten fünf","Nur der Aufschlag","Der gesamte Ballwechsel"],c:0,b:"Stundenvorbereitung Doppeltaktik (Ausgangsposition)."},
+ {k:"Doppel",q:"Ziel in der Situation Defensiv–Defensiv?",o:["Sofort einen Winner suchen","Situation stabilisieren und zurück in die Of.–Def.-Position kommen","Beide ans Netz stürmen","Stoppbälle spielen"],c:1,b:"Team-Skript Doppel 17.06.2026, Taktikmodell Doppel B.4."},
+ {k:"Doppel",q:"Was ist in der Situation Offensiv gegen Defensiv taktisch klug?",o:["Nur hart auf die Grundlinie schlagen","Flache Spinbälle, Crosslob einstreuen, schneller Ball durch die Mitte, über den schwächeren Volleyspieler gehen","Immer longline spielen","Auf den Fehler des Gegners warten"],c:1,b:"Brunert/Feddermann, Trainingsplaner Tennis (CD), Folie „Offensiv gegen Defensiv“."},
+ {k:"Doppel",q:"Was ist das „3-Schlag-Doppel“?",o:["Eine Wettkampfform","Eine Spielform: nur die ersten drei Schläge zählen, doppelte Punkte bei Abschluss des Netzspielers","Eine Turnierform","Eine Übungsform ohne Gegner"],c:1,b:"Team-Skript Doppel 17.06.2026 (Spielform)."},
+
+ /* ---------- TURNIERE ---------- */
+ {k:"Turniere",q:"Wie definiert Brunert (08.07.) die Turnierform?",o:["Praxisnahes Spiel ohne großen Druck","Formeller Wettbewerb ohne Turnierstruktur","Systematisierte Mehrrundentour, Sieger werden ermittelt","Übung ohne Gegner"],c:2,b:"Brunert, W. (08.07.2026): Weitere Spiel-, Turnier- und Wettkampfformen."},
+ {k:"Turniere",q:"Wie definiert Brunert (08.07.) die Wettkampfform?",o:["Formeller Wettbewerb ohne Turnierstruktur","Spiel mit Bonusregeln","Mehrrundenturnier mit Auf- und Abstieg","Übungsform mit Zielzonen"],c:0,b:"Brunert, W. (08.07.2026)."},
+ {k:"Turniere",q:"Welche Turnierform wird für die Sek II empfohlen — und warum?",o:["KO-System, weil es schnell geht","King of the Court, weil sich ähnliche Niveaus finden, Spiele kurz sind und die Gegner wechseln","Schweizer System, weil es fair ist","Davis Cup, weil es Teamgeist fördert"],c:1,b:"Zusammenfassung Stunde 06.05.2026 (Musterantwort)."},
+ {k:"Turniere",q:"Wie funktioniert das Kaiserturnier?",o:["KO-System mit Verliererrunde","Spielzeit je 3 Minuten, Verlierer rücken einen Platz runter, Gewinner rauf — Ziel ist der Kaiserplatz","Jeder gegen jeden über die volle Distanz","Paarung nach aktuellem Punktestand"],c:1,b:"Team-Skript Doppel 17.06.2026 (Turnierform Kaiserturnier)."},
+ {k:"Turniere",q:"Was ist das Schweizer System?",o:["Ein KO-Turnier mit Trostrunde","Paarung nach aktuellem Punktestand, ohne Ausscheiden","Ein Mannschaftswettbewerb","Ein Turnier mit Skatkarten"],c:1,b:"Brunert (08.07.2026), Sonderfälle."},
+ {k:"Turniere",q:"Welche Mannschaftswettbewerbe nennt Brunert?",o:["Fed Cup, Davis Cup, Laver Cup","Champions League, Bundesliga","Milch-Cup, Kaiserturnier","Round-Robin, Leiterturnier"],c:0,b:"Brunert (08.07.2026), Turnierformate."},
+ {k:"Turniere",q:"In welcher Kartothek steht der 59-Punkte-Wettkampf?",o:["Tennis ist ROT 2, KK 53","Tennis ist GRÜN, KK 48","Tennis Plus, KK 55","Padel Kids Coach, KK 55"],c:0,b:"SoSe 2026 — Spiel- und Wettkampfformen, Zusammenstellung Brunert (tenniskartotheken.de)."},
+
+ /* ---------- PRÜFUNG ---------- */
+ {k:"Prüfung",q:"Wie viele fehlerfreie Schläge musst du pro Stufe der Prüfungs-Schlagfolge zeigen?",o:["Drei bei sechs Versuchen","Sechs bei drei Versuchen","Zehn bei zwei Versuchen","Fünf bei fünf Versuchen"],c:1,b:"Veranstaltungsplan SoSe 2026, Prüfungsleistung."},
+ {k:"Prüfung",q:"Wie lang ist die Klausur Rückschlag?",o:["45 Minuten","60 Minuten","90 Minuten","120 Minuten"],c:1,b:"Veranstaltungsplan SoSe 2026 (Klausur am 31.07.26, 16–17 Uhr)."},
+ {k:"Prüfung",q:"Wie lang ist das Demonstrationsvideo für die Studienleistung?",o:["1 Minute","3 Minuten (Tennis + zwei tennisähnliche Spiele, je 1 Minute)","5 Minuten","10 Minuten"],c:1,b:"Veranstaltungsplan SoSe 2026, Studienleistung."},
+ {k:"Prüfung",q:"Wie hoch ist die geforderte Mindest-Anwesenheit?",o:["60 %","70 %","80 %","100 %"],c:2,b:"Veranstaltungsplan SoSe 2026 (i. d. R. wird zweimaliges Fehlen entschuldigt)."},
+ {k:"Prüfung",q:"Welche Stufe der Schlagfolge kombiniert Aufschlag, Return und den dritten Ball als Winner?",o:["Stufe 1","Stufe 6/7 (Hosenträger)","Stufe 8/9 (Volley und Hinterfeld)","Stufe 10"],c:3,b:"Veranstaltungsplan SoSe 2026, Prüfungsleistung (Stufenliste)."},
+ {k:"Prüfung",q:"Wie viel Zeit ist in der Teamstunde für den Theorie-Input vorgesehen?",o:["ca. 5 Minuten","ca. 15–20 Minuten","ca. 30 Minuten","ca. 45 Minuten"],c:1,b:"Veranstaltungsplan SoSe 2026, Vorgaben zur Durchführung."},
+ {k:"Prüfung",q:"Welche methodische Progression fordert der Veranstaltungsplan?",o:["Vom Schweren zum Leichten","Vom Leichten zum Schweren, vom Einfachen zum Komplexen, vom Bekannten zum Unbekannten, vom Langsamen zum Schnellen","Immer sofort das Zielspiel","Erst Wettkampf, dann Übung"],c:1,b:"Veranstaltungsplan SoSe 2026, Vorgaben zur Durchführung."}
+];
+
+/* ---- Vollständige Wissensprüfung ---- */
+let qs=[], qi=0, qScore=0, qWrong=[], qFilterK="Alle";
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+const KATS=["Alle"].concat(POOL.map(q=>q.k).filter((v,i,a)=>a.indexOf(v)===i));
+(function buildFilter(){
+  const box=$("#qFilter"); if(!box)return;
+  KATS.forEach(k=>{
+    const n=k==="Alle"?POOL.length:POOL.filter(q=>q.k===k).length;
+    const b=document.createElement("button");
+    b.className="btn sm"+(k==="Alle"?" acc":""); b.dataset.k=k;
+    b.textContent=k+" ("+n+")";
+    b.onclick=()=>{qFilterK=k; $$("#qFilter .btn").forEach(x=>x.classList.toggle("acc",x.dataset.k===k)); startQuiz();};
+    box.appendChild(b);
+  });
+})();
+function startQuiz(only){
+  const base = only && only.length ? only : (qFilterK==="Alle"?POOL:POOL.filter(q=>q.k===qFilterK));
+  qs=shuffle(base); qi=0; qScore=0; qWrong=[]; renderQ();
+}
+window.startQuiz=startQuiz;
+window.retryWrong=function(){ if(qWrong.length) startQuiz(qWrong.slice()); };
+function renderQ(){
+  const box=$("#quizBody"), bar=$("#qbarI"); if(!box)return;
+  if(bar)bar.style.width=(qi/qs.length*100)+"%";
+  if(qi>=qs.length){
+    const p=Math.round(qScore/qs.length*100);
+    const msg = p===100?"Makellos. Kompletter Pool, kein Fehler — du bist durch."
+      : p>=90?"Prüfungsreif. Die Restfehler sind Feinschliff."
+      : p>=75?"Solide. Die falschen Fragen jetzt gezielt nachziehen."
+      : p>=50?"Die Hälfte sitzt. Zahlen und Definitionen sind die Baustelle."
+      : "Zu wenig. Geh die Module durch, bevor du das Quiz nochmal startest.";
+    const perK={};
+    qs.forEach(q=>{ perK[q.k]=perK[q.k]||{n:0,f:0}; perK[q.k].n++; });
+    qWrong.forEach(q=>{ perK[q.k].f++; });
+    const rows=Object.keys(perK).sort().map(k=>{
+      const o=perK[k], right=o.n-o.f, pc=Math.round(right/o.n*100);
+      const col=pc>=80?"var(--ok)":pc>=50?"var(--warn)":"var(--bad)";
+      return '<tr><td class="date">'+k+'</td><td>'+right+' / '+o.n+'</td>'+
+        '<td><div style="height:6px;border-radius:9999px;background:rgba(255,255,255,.1);overflow:hidden;min-width:120px">'+
+        '<i style="display:block;height:100%;width:'+pc+'%;background:'+col+'"></i></div></td>'+
+        '<td style="color:'+col+'">'+pc+' %</td></tr>';
+    }).join("");
+    box.innerHTML='<div style="text-align:center;padding:18px 0 6px">'+
+      '<span class="num" style="font-size:3.6rem">'+qScore+'/'+qs.length+'</span>'+
+      '<h3 class="head" style="font-size:1.2rem;margin:12px 0">'+p+' %</h3>'+
+      '<p style="color:var(--muted);max-width:48ch;margin:0 auto">'+msg+'</p></div>'+
+      '<div class="tblwrap" style="margin-top:20px"><table><thead><tr><th>Bereich</th><th>Richtig</th><th></th><th>Quote</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+      '<div class="btnrow" style="justify-content:center;margin-top:20px">'+
+      (qWrong.length?'<button class="btn acc" onclick="retryWrong()">Nur die '+qWrong.length+' falschen wiederholen</button>':'')+
+      '<button class="btn" onclick="startQuiz()">Komplette Prüfung neu starten</button></div>';
+    if(bar)bar.style.width="100%";
+    return;
+  }
+  const q=qs[qi];
+  box.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;flex-wrap:wrap">'+
+      '<span class="chip acc">Frage '+(qi+1)+' / '+qs.length+'</span>'+
+      '<span class="chip">'+q.k+'</span>'+
+      '<span class="chip">Richtig: '+qScore+'</span></div>'+
+    '<h3 style="font-size:1.15rem;margin-bottom:18px;font-family:Barlow;font-weight:600;line-height:1.4">'+q.q+'</h3>'+
+    '<div id="qopts"></div><div class="qfeed" id="qfeed"></div>'+
+    '<div class="btnrow" id="qnext"></div>';
+  const opts=$("#qopts");
+  q.o.forEach((o,i)=>{
+    const b=document.createElement("button");
+    b.className="qopt liquid-glass"; b.textContent=o;
+    b.onclick=()=>answer(i,b);
+    opts.appendChild(b);
+  });
+}
+function answer(i,btn){
+  const q=qs[qi];
+  $$("#qopts .qopt").forEach((b,j)=>{
+    b.disabled=true;
+    if(j===q.c)b.classList.add("right");
+    else if(j===i)b.classList.add("wrong");
+  });
+  const ok=i===q.c;
+  if(ok)qScore++; else qWrong.push(q);
+  const f=$("#qfeed");
+  f.className="qfeed show "+(ok?"ok":"no");
+  f.innerHTML='<b>'+(ok?"Richtig.":"Falsch — richtig ist: "+q.o[q.c])+'</b><div class="beleg" style="margin-top:8px"><b>Beleg:</b> '+q.b+'</div>';
+  const n=$("#qnext");
+  const b=document.createElement("button");
+  b.className="btn acc"; b.textContent=qi+1<qs.length?"Nächste Frage →":"Auswertung →";
+  b.onclick=()=>{qi++;renderQ();};
+  n.appendChild(b);
+}
+startQuiz();
+
+/* ---------------- Init ---------------- */
+document.addEventListener("keydown",e=>{
+  const ids=["start","spiele","regeln","vermittlung","taktik","technik","doppel","turniere","quiz"];
+  const cur=ids.indexOf((document.querySelector(".module.active")||{}).id);
+  if(cur<0)return;
+  if(e.key==="ArrowRight"&&cur<ids.length-1)window.go(ids[cur+1]);
+  if(e.key==="ArrowLeft"&&cur>0)window.go(ids[cur-1]);
+});
+window.go("start");
+})();
+</script>
+</body>
+</html>
