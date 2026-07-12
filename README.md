@@ -17,11 +17,11 @@ Die Modulstruktur folgt **exakt dem Veranstaltungsplan** — nicht einem Buch-In
 | **Spiele** | 22.04. · 29.04. · 24.06. | Übersichtstabelle aller 7 Rückschlagspiele (Feldmaß, Ball, Teamstärke, Zählweise) + Steckbriefe mit den Sonderregeln zum Aufdecken |
 | **Regeln** | 22.04. | Interaktives Court-SVG (maßstabsgetreu, klickbare Linien/Zonen/Netz), Zählweise, 9 Calls & Verstöße mit Lernmodus |
 | **Vermittlung** | 15.04. · 06.05. | **Die Vermittlungskonzepte-Tabelle (1:1)**, Original-Ballschulgrafiken, DTB-Kinderkonzept, Ballschule Tennis, Münsteraner Modell, LTAD, Taktik-Spiel-Modell, Spielintelligenz in 4 Phasen, Schulpraxis-Fragen |
-| **Taktik** | 13.05. · 20.05. · 03.06. · 10.06. | Die 4 taktischen Handlungsziele (animiert), 5 taktische Prinzipien, 5 Phasen der taktischen Handlung, Ampelprinzip, Winkelhalbierende, Winner/Forced/Unforced Error |
-| **Technik** | 13.05. · 03.06. | Vorhand, Rückhand, Aufschlag, Volley — animierte Bewegungsabläufe, Knotenpunkte, Fehlerbilder, Vermittlungswege, methodische Reihe für die Schule |
-| **Doppel** | 17.06. | 7 Doppel-Grundsituationen (animiert), die 4 Organisationsformen, Aufgaben des Netzspielers |
+| **Taktik** | 13.05. · 20.05. · 03.06. · 10.06. | Die 4 taktischen Handlungsziele als klickbare Treppe, 5 taktische Prinzipien, 5 Phasen der taktischen Handlung, Ampelprinzip, Winkelhalbierende, Winner/Forced/Unforced Error |
+| **Technik** | 13.05. · 03.06. | Vorhand, Rückhand, Aufschlag, Volley — Strichzeichnungen, Bewegungsphasen, Knotenpunkte, Fehlerbilder, Vermittlungswege, methodische Reihe für die Schule |
+| **Doppel** | 17.06. | 7 Doppel-Grundsituationen mit Originalfolien, die 4 Organisationsformen, Aufgaben des Netzspielers |
 | **Turniere** | 08.07. | Spiel-/Wettkampf-/Turnierform, Turnierformate, Formen-Katalog (Kartotheken), Spielplan 08.07. |
-| **Quiz** | — | 24 Zahlen-Drill-Flipkarten + 28 MC-Fragen (10 zufällig pro Durchgang), jede Antwort mit Belegstelle |
+| **Quiz** | — | 24 Zahlen-Drill-Flipkarten + **vollständige Wissensprüfung mit 100 MC-Fragen** über 8 Bereiche, Auswertung pro Bereich, Wiederholung nur der falschen Fragen, jede Antwort mit Belegstelle |
 
 Navigation: Glass-Pill oben, Pfeiltasten ← / → wechseln das Modul, jedes Modul endet mit Zurück/Weiter.
 
@@ -36,15 +36,15 @@ Quelle: `OneDrive\Websites\Tennis` — die PNGs wurden nach `img/` als JPG (max.
 | Datei in `img/` | Foto | Warum dort |
 |---|---|---|
 | `hero-leer.jpg` | Empty court | Hero-Basisbild |
-| `hero-voll.jpg` | gameday | Hero-Reveal — identische Perspektive, deshalb funktioniert der Kometen-Schweif |
-| `start.jpg` | gameday | Match Day als Einstieg |
+| `hero-voll.jpg` | gameday evening | Hero-Reveal — identische Perspektive, deshalb funktioniert der Kometen-Schweif. Der aufgedeckte Bereich bleibt 3 s stehen, dann verblasst er |
+| `start.jpg` | gameday evening | Match Day unter Abendlicht |
 | `spiele.jpg` | Lockerroom | Material, Schläger, Bälle — die Gerätefamilie |
 | `regeln.jpg` | Empty court | Linien und Netz klar sichtbar |
 | `vermittlung.jpg` | Lockerroom empty | ruhig, strukturiert — Textmodul |
 | `taktik.jpg` | Full stadium top view | Draufsicht = Geometrie, Winkelhalbierende |
 | `technik.jpg` | Referee Chair | Netz-Nahsicht |
 | `doppel.jpg` | Full stadium top view | Draufsicht = Positionen und Stellungsspiel |
-| `turniere.jpg` | gameday | Wettkampf, volles Haus |
+| `turniere.jpg` | gameday evening | Wettkampf unter Abendlicht |
 | `quiz.jpg` | Lockerroom empty | ruhig, kein Ablenkungsmaterial |
 
 **Neue Bilder nachrüsten:** JPG in `img/` legen und exakt nach der Modul-ID benennen (`start`, `spiele`, `regeln`, `vermittlung`, `taktik`, `technik`, `doppel`, `turniere`, `quiz`). Die Seite lädt sie automatisch — kein Code-Eingriff. Fehlt ein Bild, greift der Gradient-Fallback, die Seite bleibt intakt.
@@ -104,7 +104,19 @@ Alle Inhalte stammen aus den Seminarmaterialien im übergeordneten Tennis-Ordner
 
 ---
 
+## Repository
+
+- `index.html` — die komplette Seite, Single-File, keine Dependencies
+- `img/` — Modul-Hintergründe und Technik-Strichzeichnungen (komprimiert, produktionsfertig)
+- `img/gfx/` — Originalgrafiken aus den Seminarunterlagen
+- `fotos/` — die Original-PNGs als Quellmaterial (unkomprimiert)
+- `README.md`
+
+Privates Repo: `github.com/NojoMcDybo/tennis-plus-lernwebsite`. GitHub Pages ist bei privaten Repos nur mit Pro-Account möglich — die Seite läuft ohnehin per Doppelklick auf `index.html`.
+
+---
+
 ## Qualitätssicherung
 
-- jsdom-Smoke-Test: keine Runtime-Errors, alle 9 Module schaltbar, alle Renderer liefern (18 Court-Hitboxen, 9 Call-Karten, 24 Flipkarten, 7 Doppel-Situationen), Quiz komplett durchspielbar inkl. Auswertung.
+- jsdom-Smoke-Test: keine Runtime-Errors, alle 9 Module schaltbar, alle Renderer liefern (18 Court-Hitboxen, 9 Call-Karten, 24 Flipkarten, 7 Doppel-Situationen, 4 Treppenstufen), Wissensprüfung mit allen 100 Fragen komplett durchspielbar inkl. Auswertung pro Bereich.
 - Alle Platzmaße gegen die ITF Rules of Tennis geprüft, alle Seminarzahlen gegen die Originaldokumente.
