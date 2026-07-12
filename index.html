@@ -1154,6 +1154,8 @@ const BG={start:"img/start.jpg",spiele:"img/spiele.jpg",regeln:"img/regeln.jpg",
 const TINT={start:"200,230,0",spiele:"120,200,255",regeln:"200,230,0",vermittlung:"255,170,90",
   taktik:"255,110,110",technik:"160,255,190",doppel:"170,150,255",turniere:"255,220,120",quiz:"200,230,0"};
 
+let curBg="A", current="start";
+
 const nav=$("#navlinks");
 MODULES.forEach(m=>{
   const b=document.createElement("button");
@@ -1163,9 +1165,14 @@ MODULES.forEach(m=>{
 });
 
 const okImg={};
-Object.keys(BG).forEach(k=>{const i=new Image();i.onload=()=>{okImg[k]=true};i.src=BG[k];});
+Object.keys(BG).forEach(k=>{
+  const i=new Image();
+  // Wichtig: Bild kann NACH dem ersten setBg() fertig werden (Netz statt Platte)
+  // -> dann Hintergrund des aktuellen Moduls nachziehen.
+  i.onload=()=>{ okImg[k]=true; if(k===current) setBg(k); };
+  i.src=BG[k];
+});
 
-let curBg="A", current="start";
 function setBg(id){
   const fb=$("#pageBgFallback");
   if(fb) fb.style.background =
