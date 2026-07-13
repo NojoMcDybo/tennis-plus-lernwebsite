@@ -351,11 +351,88 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
 .anim{opacity:0;filter:blur(10px);transform:translateY(18px)}
 .anim.in{opacity:1;filter:blur(0);transform:none;transition:opacity .7s ease-out,filter .7s ease-out,transform .7s ease-out}
 
+/* ============================================================
+   MOBILE — alle Anpassungen ausschliesslich in Media Queries,
+   die Desktop-Ansicht bleibt unveraendert.
+   ============================================================ */
 @media(max-width:760px){
-  nav.liquid-glass{top:8px;padding:6px;gap:4px}
-  .navbtn{padding:7px 9px;font-size:.62rem}
-  .cta{padding:8px 12px;font-size:.62rem}
-  .mod-header{padding-top:110px;min-height:30vh}
+  /* Navigation: Pille bleibt, Modul-Buttons horizontal scrollbar mit Snap */
+  nav.liquid-glass{top:8px;padding:5px 6px;gap:4px;max-width:calc(100vw - 12px)}
+  .navlinks{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .navbtn{padding:7px 10px;font-size:.62rem;scroll-snap-align:center}
+  .cta{padding:8px 11px;font-size:.6rem}
+  .logo{width:26px;height:26px}
+
+  .wrap{padding:0 16px}
+
+  /* Hero: fuellt den Screen, Bildausschnitt auf den Platz gelegt */
+  .hero{min-height:0}
+  #heroImg{object-position:center 46%}
+  .hero h1{font-size:clamp(2.1rem,11.5vw,3.4rem)}
+  .hero .kicker{font-size:.58rem;letter-spacing:.14em}
+  .hero-sub{font-size:.92rem;margin-top:10px}
+  .hero-hint{display:none}                 /* "Maus bewegen" ergibt am Handy keinen Sinn */
+  .scroll-hint{bottom:14px;font-size:.58rem}
+
+  /* Kennzahlen: 2 Spalten statt 5, kompakter */
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-top:20px;max-width:none}
+  .stat{padding:12px 14px}
+  .stat .num{font-size:1.5rem}
+  .stat span.lbl{font-size:.58rem}
+
+  /* Modul-Header */
+  .mod-header{padding:96px 0 26px;min-height:24vh}
+  .mod-header h1{font-size:clamp(1.9rem,9vw,2.7rem)}
+  .lede{font-size:.94rem}
+  h2.sec{font-size:1.25rem}
+  .sub{font-size:.9rem}
+
+  /* Zweispaltige Layouts (Inline-Styles) untereinander */
+  .grid[style*="grid-template-columns"]{grid-template-columns:1fr !important}
+  .card{padding:18px}
+  .callcard svg{height:78px}
+  .flip{height:120px}
+
+  /* Diagramme: seitlich scrollbar statt unlesbar geschrumpft */
+  .stage{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #dopBoard{min-width:620px}
+  .techfig{min-height:230px;padding:8px}
+  .techfig img{max-height:230px}
+  .steps{font-size:.82rem}
+
+  /* Tabellen: horizontal scrollbar */
+  .tblwrap{padding:4px}
+  table{min-width:520px;font-size:.82rem}
+  th{padding:11px 10px}
+  td{padding:10px 10px}
+
+  /* Die beiden Konzept-Tabellen werden gestapelt statt gescrollt */
+  table.vk{min-width:0;display:block}
+  table.vk thead{display:none}
+  table.vk tbody,table.vk tr{display:block}
+  table.vk td{display:block;width:100%;padding:16px 4px;border-bottom:1px solid rgba(255,255,255,.10)}
+  table.vk td:last-child{border-bottom:0}
+  table.vk td::before{
+    content:attr(data-col);display:block;
+    font-family:'Archivo',sans-serif;font-weight:700;font-size:.66rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:10px;
+  }
+
+  /* Quiz */
+  .qopt{padding:12px 16px;font-size:.88rem}
+  .btn{padding:9px 14px}
+  .btn.sm{padding:7px 11px}
+  #lb{padding:14px}
+  .pager{flex-direction:column;gap:10px}
+  .pager .btn{width:100%}
+}
+
+/* Sehr schmale Geraete */
+@media(max-width:400px){
+  .stats{grid-template-columns:1fr 1fr;gap:7px}
+  .hero h1{font-size:2rem}
+  .grid.g4,.grid.g3,.grid.g2{grid-template-columns:1fr}
+  #drill.grid{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -615,13 +692,13 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
           </thead>
           <tbody>
             <tr>
-              <td>
+              <td data-col="DTB-Kinderkonzept">
                 <b style="color:#7dd3fc">BLAU</b><br>Bewegungsgrundlagen<br>Bewegungsgeschichten<br>Ballgeschicklichkeit<br>Racketspiele<br>Koordinations- &amp; Teamspiele<br><br>
                 <b style="color:#f87171">ROT</b><br>Spaß am Tennis<br>Ballgewöhnung &amp; Ballkontrolle<br>Spielverständnis<br>Basisschlagtechniken<br>Koordination &amp; Motorik<br><br>
                 <b style="color:#fb923c">ORANGE</b><br>Spielspaß &amp; Teamgeist<br>Bewegung &amp; Beinarbeit<br>Taktisches Verständnis<br>Technische Fertigkeiten<br><br>
                 <b style="color:#4ade80">GRÜN</b><br>Kondition &amp; Athletik<br>Technische Fertigkeiten<br>Taktische Fähigkeiten<br>Mentale Stärke<br>Wettkampferfahrung
               </td>
-              <td>
+              <td data-col="Ballschule Tennis">
                 <b>A — Koordinative Basiskompetenzen</b><br><i>sportspielübergreifend</i><br>
                 <span style="color:var(--faint)">Beispiele:</span><br>Druckvariationen<br>Präzision<br>Koordination<br><br>
                 <b>B — Perzeptiv-motorische Basiskompetenzen</b><br><i>tennisgerichtet</i><br>
@@ -629,7 +706,7 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
                 <b>C — Technisch-taktische Basiskompetenzen</b><br><i>tennisspezifisch</i><br>
                 <span style="color:var(--faint)">Beispiele:</span><br>Spieleröffnung<br>Grundlinienspiel<br>Angriffs-/Netzspiel
               </td>
-              <td>
+              <td data-col="Münsteraner Modell">
                 <b>Tennis ist WEISS</b> — Animateur<br><span style="color:var(--faint)">3–5 Jahre</span><br><br>
                 <b>Tennis ist BLAU</b> — Schneider<br><span style="color:var(--faint)">5–6 Jahre</span><br><br>
                 <b>Tennis ist ROT</b> — Architekt<br><span style="color:var(--faint)">6–8 Jahre</span><br><br>
@@ -640,14 +717,14 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
                 <b>Tennis ist GELB</b> — Begleiter / Entwicklungscoach<br><span style="color:var(--faint)">ab 12–18+ Jahre</span><br>
                 <span style="font-size:.82em">Spieltraining anhand von Spielsituationen</span>
               </td>
-              <td>
+              <td data-col="LTAD">
                 <b>A Grundlagen</b><br>Spaß an spannenden Aufgabenerfahrungen<br><br>
                 <b>B Trainieren lernen</b><br>Vielfältige Erfahrungen, um den Spielgedanken zu erleben<br><br>
                 <b>C Training zum Trainieren</b><br>Universelle Grundlagen erarbeiten<br><br>
                 <b>D Training, um an Wettkämpfen teilzunehmen</b><br>Individual-taktische Perfektion einsetzen<br><br>
                 <b>E Training, um zu gewinnen</b><br>Sportart erfolgsorientiert spielen
               </td>
-              <td>
+              <td data-col="Taktik-Spiel-Modell">
                 <span style="color:var(--faint)">ebenso auch<br>Kasseler Vermittlungsmodell</span><br><br>
                 <b style="color:var(--accent)">1. Ballwechsel in Gang halten</b><br><br>
                 <b style="color:var(--accent)">2. Gegnerische Punktgewinne vermeiden</b><br><br>
@@ -690,7 +767,7 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
             <th>C — Technisch-taktische Basiskompetenzen<br><span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--faint)">tennisspezifisch · 6 Stück</span></th>
           </tr></thead>
           <tbody><tr>
-            <td>
+            <td data-col="A — Koordinativ (sportspielübergreifend)">
               <b>Präzisionsdruck</b> — Ergebnis <span style="color:var(--accent)">(5,48)</span><br>
               <b>Präzisionsdruck</b> — Ablauf <span style="color:var(--accent)">(5,48)</span><br>
               <b>Zeitdruck</b> — Antizipation &amp; Reaktion <span style="color:var(--accent)">(3,85)</span><br>
@@ -700,7 +777,7 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
               <b>Organisationsdruck</b> — Präzision <span style="color:var(--accent)">(5,04)</span><br>
               <b>Laufkoordination</b>
             </td>
-            <td>
+            <td data-col="B — Perzeptiv-motorisch (tennisgerichtet)">
               Orientierung auf dem Platz <span style="color:var(--accent)">(5,50)</span><br>
               Flugbahn des Balles erkennen <span style="color:var(--accent)">(5,54)</span><br>
               Auftreffort &amp; Absprungverhalten des Balles einschätzen<br>
@@ -709,7 +786,7 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
               Ballabgabe kontrollieren<br>
               Armverlängerung / Schlägergefühl
             </td>
-            <td>
+            <td data-col="C — Technisch-taktisch (tennisspezifisch)">
               <b>Spieleröffnung</b><br>Ballwurf &amp; Aufschlag · Rückschlag<br><br>
               <b>Grundlinienspiel</b><br>Grundschlag Vorhand · Grundschlag Rückhand<br><br>
               <b>Angriffs-/Netzspiel</b><br>Angriffsball · Volley/Smash · Passierball/Lob
@@ -1245,7 +1322,14 @@ function go(id){
   if(!document.getElementById(id))return;
   current=id;
   $$(".module").forEach(m=>m.classList.toggle("active",m.id===id));
-  $$(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.id===id));
+  $$(".navbtn").forEach(b=>{
+    const on=b.dataset.id===id;
+    b.classList.toggle("active",on);
+    // Handy: aktives Modul in der scrollbaren Nav-Pille sichtbar machen
+    if(on && b.scrollIntoView && window.innerWidth<=760){
+      try{ b.scrollIntoView({inline:"center",block:"nearest",behavior:"smooth"}); }catch(e){}
+    }
+  });
   setBg(id);
   window.scrollTo({top:0,behavior:"instant" in window?"auto":"auto"});
   entrance(document.getElementById(id));
