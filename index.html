@@ -344,6 +344,8 @@ body.lernmodus .callcard.shown h4{filter:none}
 }
 .aud:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(0,0,0,.5), 0 0 34px rgba(200,230,0,.22)}
 .aud.playing{box-shadow:0 14px 44px rgba(0,0,0,.5), 0 0 44px rgba(200,230,0,.35)}
+.aud.loading .aud-btn{opacity:.55}
+.aud.loading .eq span{animation:none;height:5px}
 
 .aud-btn{
   flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:0;cursor:pointer;
@@ -1479,14 +1481,23 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")window.closeLb()});
       if(a.duration) bar.style.width=(a.currentTime/a.duration*100)+"%";
       sub.textContent=fmt(a.currentTime)+" / "+fmt(a.duration);
     });
-    a.addEventListener("ended",()=>{ tile.classList.remove("playing"); bar.style.width="0%"; sub.textContent=baseSub; btn.setAttribute("aria-label","Abspielen"); });
+    // Status an den echten Media-Events haengen, nicht am play()-Promise:
+    // das bleibt pending, solange gepuffert wird -> sonst passiert sichtbar nichts.
+    a.addEventListener("play",()=>{ tile.classList.add("playing"); tile.classList.remove("loading"); btn.setAttribute("aria-label","Stoppen"); });
+    a.addEventListener("playing",()=>{ tile.classList.remove("loading"); });
+    a.addEventListener("waiting",()=>{ tile.classList.add("loading"); sub.textContent="lädt …"; });
+    a.addEventListener("pause",()=>{ tile.classList.remove("playing","loading"); btn.setAttribute("aria-label","Abspielen"); });
+    a.addEventListener("error",()=>{ tile.classList.remove("playing","loading"); sub.textContent="Datei konnte nicht geladen werden"; });
+    a.addEventListener("ended",()=>{ tile.classList.remove("playing"); bar.style.width="0%"; sub.textContent=baseSub; });
     const toggle=e=>{
       e.stopPropagation();
       if(a.paused){
-        players.forEach(p=>{ if(p.a!==a){ p.a.pause(); p.tile.classList.remove("playing"); } });   // immer nur eins
-        a.play().then(()=>{ tile.classList.add("playing"); btn.setAttribute("aria-label","Stoppen"); }).catch(()=>{});
+        players.forEach(p=>{ if(p.a!==a) p.a.pause(); });        // immer nur eins gleichzeitig
+        tile.classList.add("loading","playing"); sub.textContent="lädt …";
+        const pr=a.play();
+        if(pr && pr.catch) pr.catch(()=>{ tile.classList.remove("playing","loading"); sub.textContent=baseSub; });
       }else{
-        a.pause(); tile.classList.remove("playing"); btn.setAttribute("aria-label","Abspielen");
+        a.pause();
       }
     };
     btn.onclick=toggle;
