@@ -357,11 +357,15 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
    ============================================================ */
 @media(max-width:760px){
   /* Navigation: Pille bleibt, Modul-Buttons horizontal scrollbar mit Snap */
-  nav.liquid-glass{top:8px;padding:5px 6px;gap:4px;max-width:calc(100vw - 12px)}
-  .navlinks{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  nav.liquid-glass{top:8px;padding:5px 6px;gap:5px;max-width:calc(100vw - 12px);width:calc(100vw - 12px)}
+  /* Der Buttonstreifen muss schrumpfen duerfen, sonst laeuft er aus der Pille heraus */
+  .navlinks{flex:1 1 auto;min-width:0;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+    -webkit-mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%);
+    mask-image:linear-gradient(90deg,#000 0,#000 88%,transparent 100%)}
   .navbtn{padding:7px 10px;font-size:.62rem;scroll-snap-align:center}
-  .cta{padding:8px 11px;font-size:.6rem}
-  .logo{width:26px;height:26px}
+  .cta{flex:0 0 auto;padding:8px 10px;font-size:.58rem}
+  .logo{flex:0 0 auto;width:26px;height:26px}
+  .hero .kicker{margin-bottom:8px}
 
   .wrap{padding:0 16px}
 
