@@ -235,9 +235,10 @@ tr.exam td{color:var(--accent)}
 /* Hero */
 .hero{
   position:relative;width:100vw;margin-left:calc(50% - 50vw);
-  height:min(84vh,760px);overflow:hidden;display:flex;align-items:flex-end;
+  aspect-ratio:1672/941;          /* = Seitenverhältnis der Hero-Fotos -> kein Anschnitt oben/unten */
+  overflow:hidden;display:flex;align-items:flex-end;
 }
-#heroImg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+#heroImg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center}
 #heroCv{position:absolute;inset:0;width:100%;height:100%}
 .hero-fallback{
   position:absolute;inset:0;
@@ -342,7 +343,6 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
   .navbtn{padding:7px 9px;font-size:.62rem}
   .cta{padding:8px 12px;font-size:.62rem}
   .mod-header{padding-top:110px;min-height:30vh}
-  .hero{height:min(72vh,620px)}
 }
 </style>
 </head>
@@ -1302,7 +1302,7 @@ document.addEventListener("pointermove",e=>{
     // object-fit: cover NACHRECHNEN — identisch zu #heroImg (100% Breite, object-position: center 42%)
     const s=Math.max(w/full.width, h/full.height);
     const dw=full.width*s, dh=full.height*s;
-    const dx=(w-dw)/2, dy=(h-dh)*0.42;
+    const dx=(w-dw)/2, dy=(h-dh)/2;
     ctx.drawImage(full,dx,dy,dw,dh);
     ctx.globalCompositeOperation="destination-in";
     ctx.drawImage(mask,0,0,w,h);
