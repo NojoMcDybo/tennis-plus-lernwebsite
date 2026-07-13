@@ -239,8 +239,8 @@ tr.exam td{color:var(--accent)}
 /* Hero */
 .hero{
   position:relative;width:100vw;margin-left:calc(50% - 50vw);
-  aspect-ratio:1672/941;          /* = Seitenverhältnis der Hero-Fotos -> kein Anschnitt oben/unten */
-  overflow:hidden;display:flex;align-items:flex-end;
+  height:100svh; min-height:560px;      /* fuellt den Bildschirm -> Inhalt sitzt mittig, Lernpfad liegt unter der Falz */
+  overflow:hidden;display:flex;align-items:center;
 }
 #heroImg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center}
 #heroCv{position:absolute;inset:0;width:100%;height:100%}
@@ -249,16 +249,24 @@ tr.exam td{color:var(--accent)}
   background:radial-gradient(75% 60% at 50% 8%, rgba(200,230,0,.10), transparent 60%),
              linear-gradient(180deg,#0d1005,#000);
 }
-.hero-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.15) 35%,rgba(0,0,0,.86) 100%);pointer-events:none}
-.hero-in{position:relative;z-index:3;width:100%;padding-bottom:44px}
+.hero-grad{position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(110% 70% at 32% 62%, rgba(0,0,0,.50), rgba(0,0,0,.18) 45%, transparent 70%),
+    linear-gradient(180deg, rgba(0,0,0,.22) 0%, rgba(0,0,0,.02) 28%, rgba(0,0,0,.10) 60%, rgba(0,0,0,.55) 100%);
+}
+.hero-in{position:relative;z-index:3;width:100%}
 .hero h1{font-size:clamp(2.6rem,8.2vw,6.4rem);text-shadow:0 8px 40px rgba(0,0,0,.8)}
 .hero h1 .w{display:inline-block}
 .hero .accent{color:var(--accent)}
 .hero-sub{color:rgba(255,255,255,.85);font-size:1.05rem;margin-top:14px;max-width:56ch;text-shadow:0 2px 14px rgba(0,0,0,.7)}
 .hero-hint{position:absolute;right:22px;bottom:20px;z-index:3;font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;font-family:'Archivo',sans-serif}
+.scroll-hint{position:absolute;left:50%;transform:translateX(-50%);bottom:20px;z-index:3;
+  font-size:.68rem;color:rgba(255,255,255,.55);letter-spacing:.12em;text-transform:uppercase;
+  font-family:'Archivo',sans-serif;font-weight:600;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translate(-50%,0);opacity:.55}50%{transform:translate(-50%,6px);opacity:.9}}
 
 /* Stats */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:-34px;position:relative;z-index:5}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:30px;position:relative;z-index:5;max-width:900px}
 .stat{border-radius:var(--r-card);padding:18px}
 .stat .num{font-size:1.9rem}
 .stat span.lbl{font-size:.72rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-family:'Archivo',sans-serif;font-weight:600}
@@ -378,21 +386,21 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
         <div class="kicker">Universität Münster · Institut für Sportwissenschaft · 075348</div>
         <h1 id="heroHead"><span class="w">Tennis</span> <span class="w accent">Plus</span></h1>
         <p class="hero-sub">Prüfungsvorbereitung SoSe 2026. Aufgebaut entlang des Veranstaltungsplans von Binnenbruck &amp; Brunert — vom ersten Ballkontakt bis zur Klausur Rückschlag.</p>
+        <div class="stats">
+          <div class="stat liquid-glass anim"><span class="num">60</span><span class="lbl">Min Klausur</span></div>
+          <div class="stat liquid-glass anim"><span class="num">10</span><span class="lbl">Stufen Schlagfolge</span></div>
+          <div class="stat liquid-glass anim"><span class="num">7</span><span class="lbl">Rückschlagspiele</span></div>
+          <div class="stat liquid-glass anim"><span class="num">4</span><span class="lbl">Taktische Ziele</span></div>
+          <div class="stat liquid-glass anim"><span class="num">2</span><span class="lbl">LP Studienleistung</span></div>
+        </div>
       </div>
     </div>
     <div class="hero-hint">Maus über das Bild bewegen</div>
+    <div class="scroll-hint">Scrollen für den Lernpfad ↓</div>
   </div>
 
   <div class="wrap">
-    <div class="stats">
-      <div class="stat liquid-glass anim"><span class="num">60</span><span class="lbl">Min Klausur</span></div>
-      <div class="stat liquid-glass anim"><span class="num">10</span><span class="lbl">Stufen Schlagfolge</span></div>
-      <div class="stat liquid-glass anim"><span class="num">7</span><span class="lbl">Rückschlagspiele</span></div>
-      <div class="stat liquid-glass anim"><span class="num">4</span><span class="lbl">Taktische Ziele</span></div>
-      <div class="stat liquid-glass anim"><span class="num">2</span><span class="lbl">LP Studienleistung</span></div>
-    </div>
-
-    <section class="blk">
+    <section class="blk" style="margin-top:70px">
       <h2 class="sec">Der Lernpfad</h2>
       <p class="sub">Acht Module, aufgebaut entlang der Themen des Semesters. Von links nach rechts durcharbeiten — oder direkt dahin springen, wo es weh tut.</p>
       <div class="grid g4" id="lernpfad"></div>
