@@ -100,10 +100,14 @@ a{color:var(--accent);text-decoration:none}
 .liquid-glass:hover::after{opacity:1}
 
 /* ---------- Navigation ---------- */
-nav{
+/* Achtung: .liquid-glass setzt position:relative und gewinnt als Klasse gegen den Element-Selektor "nav".
+   Deshalb muss die Nav-Regel dieselbe Spezifitaet haben, sonst steht die Leiste im Fluss und
+   schiebt den Inhalt um ihre Hoehe nach unten. */
+nav.liquid-glass{
   position:fixed; top:14px; left:50%; transform:translateX(-50%);
   z-index:50; display:flex; align-items:center; gap:6px;
   padding:7px 8px; border-radius:var(--r-pill); max-width:min(1180px,calc(100vw - 24px));
+  overflow:visible;
 }
 .logo{
   width:32px;height:32px;border-radius:50%;flex:0 0 auto;
@@ -339,7 +343,7 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
 .anim.in{opacity:1;filter:blur(0);transform:none;transition:opacity .7s ease-out,filter .7s ease-out,transform .7s ease-out}
 
 @media(max-width:760px){
-  nav{top:8px;padding:6px;gap:4px}
+  nav.liquid-glass{top:8px;padding:6px;gap:4px}
   .navbtn{padding:7px 9px;font-size:.62rem}
   .cta{padding:8px 12px;font-size:.62rem}
   .mod-header{padding-top:110px;min-height:30vh}
