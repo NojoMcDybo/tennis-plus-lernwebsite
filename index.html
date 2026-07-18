@@ -302,7 +302,13 @@ tr.exam td{color:var(--accent)}
 #feldSvg .fhit-line{stroke:transparent;stroke-width:11;cursor:pointer}
 #feldSvg .fhit-line:hover{stroke:var(--fc);stroke-opacity:.55}
 #feldSvg .fhit-line.sel{stroke:var(--fc)}
-#feldInfo{--fc:#3b82f6}
+.courtbox::after{content:none}          /* kein Cursor-Glow im Feld-Panel -> kein Aufblinken beim Klicken */
+#feldInfo{--fc:#3b82f6;display:flex;flex-direction:column}
+#feldHot{padding-bottom:4px}
+.feldbrief{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12)}
+.feldbrief-h{font-family:'Archivo',sans-serif;font-weight:700;font-size:.66rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--fc);margin-bottom:8px}
+.feldbrief p{color:rgba(255,255,255,.8);font-size:.9rem;line-height:1.55}
 #feldInfo .num{font-size:1.7rem;display:block;margin-bottom:4px}
 .feldtag{display:inline-block;font-family:'Archivo',sans-serif;font-weight:700;font-size:.62rem;
   letter-spacing:.14em;text-transform:uppercase;color:#0b1400;background:var(--fc);
@@ -759,21 +765,14 @@ td.spiel{display:flex;align-items:center;gap:10px;color:#fff;font-weight:500;whi
 
     <section class="blk">
       <h2 class="sec">Die Spielfelder — interaktiv</h2>
-      <p class="sub">Jedes Rückschlagspiel hat eine eigene Farbe. Spiel wählen, dann auf Linien und Zonen im Feld tippen — Maß, Regel und Beleg erscheinen daneben.</p>
+      <p class="sub">Jedes Rückschlagspiel hat eine eigene Farbe. Spiel oben wählen, dann auf Feld, Linien, Netz oder Zonen tippen — Maß, Regel und Beleg erscheinen daneben, darunter der Steckbrief mit den Sonderregeln.</p>
       <div class="feldchips" id="feldChips"></div>
-      <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px;margin-top:14px">
+      <div class="grid" style="grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;align-items:start">
         <div class="courtbox liquid-glass anim">
           <svg id="feldSvg" viewBox="0 0 320 460" xmlns="http://www.w3.org/2000/svg"></svg>
         </div>
         <div id="feldInfo" class="liquid-glass anim" style="border-radius:var(--r-card);padding:22px;min-height:190px"></div>
       </div>
-    </section>
-
-    <section class="blk">
-      <h2 class="sec">Steckbriefe — klick zum Aufdecken</h2>
-      <p class="sub">Die prüfungsrelevanten Sonderregeln pro Spiel. Erst raten, dann aufdecken.</p>
-      <div class="grid g2" id="steckbriefe"></div>
-      <div class="beleg"><b>Beleg:</b> Team-Protokoll 29.04.2026 (Pickleball, Touchtennis, Speckbrett); Ablauf Tamburello/Streetracket 24.06.2026; Street Racket Basic Concept; Binnenbruck, A. (2017): „Wolf im Schafspelz — der Tamburello-Schläger"; speckbrettliga.de/statuten, touchtennis.de.</div>
     </section>
 
     <section class="blk">
@@ -1772,76 +1771,84 @@ const COURT_INFO={
 })();
 
 /* ---------------- Interaktive Spielfelder (alle Rückschlagspiele, farbcodiert) ---------------- */
-/* Koordinaten in Metern, Ursprung oben links; Renderer skaliert maßstabsgetreu. */
+/* Meter-Koordinaten (Ursprung oben links); jedes gezeichnete Element ist klickbar. */
 const FELDER=[
- {key:"tennis",name:"Tennis",accent:"#5cc85c",w:10.97,h:23.77,net:11.885,
-  lines:[[1.37,0,1.37,23.77],[9.60,0,9.60,23.77],[1.37,5.485,9.60,5.485],[1.37,18.285,9.60,18.285],[5.485,5.485,5.485,18.285]],
-  zones:[],
-  hot:[
-   {t:"rect",c:[0,0,10.97,23.77],titel:"Normalfeld",mass:"23,77 × 10,97 m",regel:"Doppelfeld. Einzel: 8,23 m breit (Doppelkanäle je 1,37 m ausgeschlossen). Midcourt 18,00 × 8,23 m, Kleinfeld 10,97 × 5,48 m.",beleg:"Übersicht Rückschlagspiele; ITF Rules of Tennis, Rule 1"},
-   {t:"line",c:[0,11.885,10.97,11.885],titel:"Netz",mass:"0,914 / 1,07 m",regel:"0,914 m in der Mitte, 1,07 m an den Netzpfosten.",beleg:"ITF Rules of Tennis, Rule 1"},
-   {t:"rect",c:[1.37,5.485,4.115,6.40],titel:"Aufschlagfeld",mass:"6,40 × 4,115 m",regel:"Aufschlag immer diagonal ins gegenüberliegende Feld. Zwei Versuche.",beleg:"ITF Rules of Tennis, Rules 1 & 16"}
+ {key:"tennis",name:"Tennis",accent:"#5cc85c",w:10.97,h:23.77,
+  field:{titel:"Normalfeld",mass:"23,77 × 10,97 m",regel:"Doppelfeld. Einzel: 8,23 m breit (Doppelkanäle je 1,37 m ausgeschlossen). Midcourt 18,00 × 8,23 m, Kleinfeld 10,97 × 5,48 m.",beleg:"Übersicht Rückschlagspiele; ITF Rules of Tennis, Rule 1"},
+  net:{y:11.885,titel:"Netz",mass:"0,914 / 1,07 m",regel:"0,914 m in der Mitte (durch einen Gurt straff gehalten), 1,07 m an den Netzpfosten.",beleg:"ITF Rules of Tennis, Rule 1"},
+  elems:[
+   {t:"line",c:[1.37,0,1.37,23.77],titel:"Einzel-Seitenlinie",mass:"8,23 m breit",regel:"Im Einzel gilt das schmalere Feld; die Doppelkanäle sind ausgeschlossen.",beleg:"ITF Rules of Tennis, Rule 1"},
+   {t:"line",c:[9.60,0,9.60,23.77],titel:"Einzel-Seitenlinie",mass:"8,23 m breit",regel:"Im Einzel gilt das schmalere Feld; die Doppelkanäle sind ausgeschlossen.",beleg:"ITF Rules of Tennis, Rule 1"},
+   {t:"line",c:[1.37,5.485,9.60,5.485],titel:"Aufschlaglinie (T-Linie)",mass:"6,40 m vom Netz",regel:"Begrenzt die Aufschlagfelder. Der Aufschlag muss diagonal davor landen.",beleg:"ITF Rules of Tennis, Rule 1"},
+   {t:"line",c:[1.37,18.285,9.60,18.285],titel:"Aufschlaglinie (T-Linie)",mass:"6,40 m vom Netz",regel:"Begrenzt die Aufschlagfelder. Der Aufschlag muss diagonal davor landen.",beleg:"ITF Rules of Tennis, Rule 1"},
+   {t:"line",c:[5.485,5.485,5.485,18.285],titel:"Mittellinie",mass:"—",regel:"Teilt die Aufschlagfelder in eine rechte und eine linke Hälfte.",beleg:"ITF Rules of Tennis, Rule 1"}
   ],
+  brief:'<b>Tennis</b> ist die Hauptsportart der Prüfung. Vollständiger interaktiver Court mit Zählweise und allen Maßen im eigenen Modul <b>Regeln</b>.',
   detail:"regeln"},
 
- {key:"padel",name:"Padel",accent:"#3b82f6",w:10,h:20,net:10,walls:true,
-  lines:[[0,3,10,3],[0,17,10,17],[5,0,5,3],[5,17,5,20]],
-  zones:[],
-  hot:[
-   {t:"rect",c:[0,0,10,20],titel:"Spielfeld",mass:"20 × 10 m",regel:"Von Glaswänden und Gitter umschlossen, kein Doppelkanal. Gespielt wird ausschließlich Doppel, Zählweise wie im Tennis.",beleg:"Übersicht Rückschlagspiele"},
-   {t:"line",c:[0,10,10,10],titel:"Netz",mass:"0,88 / 0,92 m",regel:"0,88 m in der Mitte, 0,92 m an den Pfosten — niedriger als beim Tennis.",beleg:"Innenlinien & Netzhöhe: FIP Padel Regulations"},
-   {t:"line",c:[0,3,10,3],titel:"Aufschlaglinie",mass:"3 m von der Rückwand",regel:"Aufschlag von unten, diagonal ins gegenüberliegende Feld. Taktik: Ball bewusst gegen die Glaswand springen lassen, um Zeit zur Positionierung zu gewinnen.",beleg:"Team-Protokoll 20.05.2026 (Glaswand-Taktik); Aufschlaglinie: FIP"}
-  ]},
+ {key:"padel",name:"Padel",accent:"#3b82f6",w:10,h:20,
+  field:{titel:"Spielfeld",mass:"20 × 10 m",regel:"Ohne Doppelkanal. Gespielt wird ausschließlich Doppel, Zählweise wie im Tennis.",beleg:"Übersicht Rückschlagspiele"},
+  net:{y:10,titel:"Netz",mass:"0,88 / 0,92 m",regel:"0,88 m in der Mitte, 0,92 m an den Pfosten — niedriger als beim Tennis.",beleg:"Netzhöhe: FIP Padel Regulations"},
+  walls:{titel:"Glaswände",mass:"4 m hoch",regel:"Rück- und Seitenwände (3 m Glas + 1 m Gitter) gehören zum Spiel: der Ball darf nach dem Aufspringen von der Wand zurückgespielt werden. Taktik aus dem Seminar: den Ball bewusst gegen die Glaswand springen lassen, um Zeit zur Positionierung zu gewinnen und schwierige Bälle zu entschärfen.",beleg:"Team-Protokoll 20.05.2026 (Glaswand-Taktik); Wandmaße: FIP Padel Regulations"},
+  elems:[
+   {t:"line",c:[0,3,10,3],titel:"Aufschlaglinie",mass:"3 m von der Rückwand",regel:"Der Aufschlag wird von unten und diagonal ins gegenüberliegende Feld gespielt.",beleg:"Team-Protokoll 20.05.2026; Linie: FIP"},
+   {t:"line",c:[0,17,10,17],titel:"Aufschlaglinie",mass:"3 m von der Rückwand",regel:"Der Aufschlag wird von unten und diagonal ins gegenüberliegende Feld gespielt.",beleg:"Team-Protokoll 20.05.2026; Linie: FIP"},
+   {t:"line",c:[5,0,5,3],titel:"Mittellinie",mass:"—",regel:"Teilt den Aufschlagbereich in rechts und links.",beleg:"FIP Padel Regulations"},
+   {t:"line",c:[5,17,5,20],titel:"Mittellinie",mass:"—",regel:"Teilt den Aufschlagbereich in rechts und links.",beleg:"FIP Padel Regulations"}
+  ],
+  brief:'<b>Padel</b> — Feld <b>20 × 10 m</b>, umschlossen von Glaswänden und Gitter, <b>kein Doppelkanal</b>. Gespielt wird <b>ausschließlich Doppel</b>, Zählweise wie im Tennis. Taktischer Clou: Bälle bewusst gegen die Glaswand springen lassen, um <b>Zeit zur Positionierung</b> zu gewinnen.'},
 
- {key:"pickleball",name:"Pickleball",accent:"#f59e0b",w:6,h:13.4,net:6.7,
-  lines:[[3,0,3,4.57],[3,8.83,3,13.4]],
-  zones:[{x:0,y:4.57,w:6,h:2.13,label:"Küche"},{x:0,y:6.7,w:6,h:2.13,label:"Küche"}],
-  hot:[
-   {t:"rect",c:[0,0,6,13.4],titel:"Spielfeld",mass:"13,4 × 6 m",regel:"Seminar-Maß. Offiziell 13,41 × 6,10 m (44 × 20 ft). Ohne Doppelkanal.",beleg:"Übersicht Rückschlagspiele; USA Pickleball, Section 2"},
-   {t:"rect",c:[0,4.57,6,4.26],titel:"Die „Küche“",mass:"2,13 m je Seite",regel:"Non-Volley-Zone am Netz: hier darf der Ball nicht direkt aus der Luft geschlagen werden.",beleg:"Team-Protokoll 29.04.2026; USA Pickleball, Section 2"},
-   {t:"rect",c:[0,0,3,4.57],titel:"Aufschlagfeld",mass:"diagonal",regel:"Aufschlag unterhalb der Hüfte, diagonal. Doppel-Bounce-Regel: nach dem Aufschlag muss der Ball auf jeder Seite einmal aufspringen. Nur das aufschlagende Team punktet, Spiel bis 11 (2 Punkte Abstand).",beleg:"Team-Protokoll 29.04.2026"}
-  ]},
+ {key:"pickleball",name:"Pickleball",accent:"#f59e0b",w:6,h:13.4,
+  field:{titel:"Spielfeld",mass:"13,4 × 6 m",regel:"Seminar-Maß. Offiziell 13,41 × 6,10 m (44 × 20 ft). Ohne Doppelkanal, ohne Wände.",beleg:"Übersicht Rückschlagspiele; USA Pickleball, Section 2"},
+  net:{y:6.7,titel:"Netz",mass:"niedrig",regel:"Ein niedriges Netz in der Feldmitte. Direkt davor liegt beidseitig die Küche.",beleg:"Team-Protokoll 29.04.2026; USA Pickleball, Section 2"},
+  elems:[
+   {t:"zone",c:[0,4.57,6,2.13],label:"Küche",titel:"Die „Küche“",mass:"2,13 m je Seite",regel:"Non-Volley-Zone am Netz: hier darf der Ball nicht direkt aus der Luft geschlagen werden.",beleg:"Team-Protokoll 29.04.2026; USA Pickleball, Section 2"},
+   {t:"zone",c:[0,6.7,6,2.13],label:"Küche",titel:"Die „Küche“",mass:"2,13 m je Seite",regel:"Non-Volley-Zone am Netz: hier darf der Ball nicht direkt aus der Luft geschlagen werden.",beleg:"Team-Protokoll 29.04.2026; USA Pickleball, Section 2"},
+   {t:"line",c:[3,0,3,4.57],titel:"Mittellinie",mass:"—",regel:"Trennt die beiden Aufschlagfelder. Aufschlag diagonal, unterhalb der Hüfte.",beleg:"Team-Protokoll 29.04.2026"},
+   {t:"line",c:[3,8.83,3,13.4],titel:"Mittellinie",mass:"—",regel:"Trennt die beiden Aufschlagfelder. Aufschlag diagonal, unterhalb der Hüfte.",beleg:"Team-Protokoll 29.04.2026"}
+  ],
+  brief:'<b>Doppel-Bounce-Regel:</b> Nach dem Aufschlag muss der Ball auf jeder Seite einmal aufspringen, bevor direkt aus der Luft gespielt werden darf. <b>Die „Küche“</b> am Netz: dort darf nicht volley geschlagen werden. <b>Zählweise:</b> Nur das aufschlagende Team kann punkten — Fehler = kein Punkt, sondern Aufschlagwechsel. Bis 11, mind. 2 Punkte Abstand. Ansage im Doppel mit drei Zahlen: eigene – Gegner – Aufschläger (1 oder 2).'},
 
- {key:"touchtennis",name:"Touchtennis",accent:"#14b8a6",w:6,h:12,net:6,
-  lines:[[0.5,0,0.5,12],[5.5,0,5.5,12]],
-  zones:[],
-  hot:[
-   {t:"rect",c:[0,0,6,12],titel:"Spielfeld",mass:"12 × 6 m",regel:"Mit Doppelkanal; im Einzel ist das Feld 5 m breit, im Doppel 6 m.",beleg:"Übersicht Rückschlagspiele; Team-Protokoll 29.04.2026"},
-   {t:"line",c:[0,6,6,6],titel:"Netz",mass:"Aufspannbar",regel:"Aufschlag wird cross gespielt. Ball: gelber Softball, Ø 8 cm. Schläger: 21 Zoll (Kinder-Tennisschläger).",beleg:"Team-Protokoll 29.04.2026"},
-   {t:"rect",c:[0.5,0,5,12],titel:"Zählweise",mass:"Sätze bis 4",regel:"Gezählt wird wie im Tennis (15/30/40), aber Sätze gehen nur bis 4 Spiele, Tie-Break bis 5 Punkte bei 4:4.",beleg:"Team-Protokoll 29.04.2026; Übersicht Rückschlagspiele"}
-  ]},
+ {key:"touchtennis",name:"Touchtennis",accent:"#14b8a6",w:6,h:12,
+  field:{titel:"Spielfeld",mass:"12 × 6 m",regel:"Mit Doppelkanal; im Einzel ist das Feld 5 m breit, im Doppel 6 m.",beleg:"Übersicht Rückschlagspiele; Team-Protokoll 29.04.2026"},
+  net:{y:6,titel:"Netz",mass:"aufspannbar",regel:"Aufschlag wird cross gespielt. Ball: gelber Softball, Ø 8 cm. Schläger: 21 Zoll (Kinder-Tennisschläger).",beleg:"Team-Protokoll 29.04.2026"},
+  elems:[
+   {t:"line",c:[0.5,0,0.5,12],titel:"Einzel-Seitenlinie",mass:"Feld 5 m breit",regel:"Im Einzel ist das Feld 5 m breit; die äußeren 0,5 m je Seite sind der Doppelkanal.",beleg:"Team-Protokoll 29.04.2026"},
+   {t:"line",c:[5.5,0,5.5,12],titel:"Einzel-Seitenlinie",mass:"Feld 5 m breit",regel:"Im Einzel ist das Feld 5 m breit; die äußeren 0,5 m je Seite sind der Doppelkanal.",beleg:"Team-Protokoll 29.04.2026"}
+  ],
+  brief:'<b>Touchtennis</b> — Schläger <b>21 Zoll</b>, Feld <b>12 × 6 m</b> (Einzel 5 m breit), Ball gelber Softball <b>Ø 8 cm</b>. Aufschlag cross. Gezählt wie im Tennis (15/30/40), aber <b>Sätze nur bis 4</b> Spiele, Tie-Break bis 5 Punkte bei 4:4.'},
 
- {key:"streetracket",name:"Streetracket",accent:"#a855f7",w:2,h:6,net:null,
-  lines:[[0,2,2,2],[0,4,2,4]],
-  zones:[{x:0,y:2,w:2,h:2,label:"Neutralzone"}],
-  hot:[
-   {t:"rect",c:[0,0,2,2],titel:"Spielfeld A",mass:"2 × 2 m",regel:"Drei Zonen à 2 × 2 m in einer Reihe. Kreide reicht — deshalb „Street“, keine Anlage nötig.",beleg:"Übersicht Rückschlagspiele; Ablauf Tamburello/Streetracket 24.06.2026"},
-   {t:"rect",c:[0,2,2,2],titel:"Neutralzone",mass:"2 × 2 m",regel:"Die mittlere Zone wird übersprungen — der Ball muss darüber hinweg ins gegnerische Feld. Immer nach oben spielen, kein Volley.",beleg:"Street Racket Basic Concept; Übersicht Rückschlagspiele"},
-   {t:"rect",c:[0,4,2,2],titel:"Zählweise",mass:"bis 11",regel:"Bis 11 Punkte. Einzel oder Doppel. Maximale Zugänglichkeit: kein Netz, kein Verein.",beleg:"Übersicht Rückschlagspiele"}
-  ]},
+ {key:"streetracket",name:"Streetracket",accent:"#a855f7",w:2,h:6,
+  field:{titel:"Anlage",mass:"3 × (2 × 2 m)",regel:"Drei Zonen à 2 × 2 m in einer Reihe. Kreide reicht — deshalb „Street“, keine Anlage nötig.",beleg:"Übersicht Rückschlagspiele; Ablauf Tamburello/Streetracket 24.06.2026"},
+  net:null,
+  elems:[
+   {t:"zone",c:[0,0,2,2],label:"Feld A",titel:"Spielfeld A",mass:"2 × 2 m",regel:"Eines der beiden Spielfelder. Der Ball muss nach oben und über die Neutralzone ins gegnerische Feld.",beleg:"Street Racket Basic Concept"},
+   {t:"zone",c:[0,2,2,2],label:"Neutralzone",fill:.42,titel:"Neutralzone",mass:"2 × 2 m",regel:"Die mittlere Zone wird übersprungen — der Ball muss darüber hinweg. Immer nach oben spielen, kein Volley.",beleg:"Street Racket Basic Concept; Übersicht Rückschlagspiele"},
+   {t:"zone",c:[0,4,2,2],label:"Feld B",titel:"Spielfeld B",mass:"2 × 2 m",regel:"Das gegnerische Spielfeld. Bis 11 Punkte, Einzel oder Doppel.",beleg:"Übersicht Rückschlagspiele"}
+  ],
+  brief:'<b>Streetracket</b> — drei Felder à <b>2 × 2 m</b> (Kreide reicht). <b>Immer nach oben spielen, kein Volley.</b> Der Ball muss über die Neutralzone. Bis 11 Punkte. Einzel oder Doppel — maximale Zugänglichkeit: kein Netz, keine Anlage, kein Verein.'},
 
- {key:"tamburello",name:"Tamburello",accent:"#e07a5f",w:16,h:34,net:null,
-  lines:[[0,16,16,16],[0,18,16,18]],
-  zones:[{x:0,y:16,w:16,h:2,label:"2-m-Zone"}],
-  hot:[
-   {t:"rect",c:[0,0,16,34],titel:"Indoor-Feld",mass:"34 × 16 m",regel:"Beach 24 × 11 m, Kleinfeld 9,45 × 4,10 m. Gespielt wird 1:1 bis 5:5 über eine neutrale Mittelzone statt über ein Netz.",beleg:"Übersicht Rückschlagspiele; Ablauf Tamburello/Streetracket 24.06.2026"},
-   {t:"rect",c:[0,16,16,2],titel:"Neutrale 2-m-Zone",mass:"2 m",regel:"Die Mittelzone trennt die Felder — der Ball muss darüber. Reguläres Spiel mit Aufschlag, Volley erlaubt, Aufschlagwechsel nach Spielgewinn.",beleg:"Ablauf Tamburello/Streetracket 24.06.2026"},
-   {t:"rect",c:[0,0,16,8],titel:"Schläger & Zählweise",mass:"Ø 24–28 cm",regel:"Kreisrund, engmaschige Nylonmembran, kein Schaft — „Wolf im Schafspelz“. In der Schule 15/30/45/Spiel, im Verein Gewinnsätze bis 21 (bei 2:2).",beleg:"Binnenbruck (2017); Ablauf 24.06.2026; Übersicht Rückschlagspiele"}
-  ]},
+ {key:"tamburello",name:"Tamburello",accent:"#e07a5f",w:16,h:34,
+  field:{titel:"Indoor-Feld",mass:"34 × 16 m",regel:"Beach 24 × 11 m, Kleinfeld 9,45 × 4,10 m. Gespielt wird 1:1 bis 5:5 über eine neutrale Mittelzone statt über ein Netz.",beleg:"Übersicht Rückschlagspiele; Ablauf Tamburello/Streetracket 24.06.2026"},
+  net:null,
+  elems:[
+   {t:"zone",c:[0,16,16,2],label:"2-m-Zone",fill:.42,titel:"Neutrale 2-m-Zone",mass:"2 m",regel:"Die Mittelzone trennt die Felder — der Ball muss darüber. Reguläres Spiel mit Aufschlag, Volley erlaubt, Aufschlagwechsel nach Spielgewinn.",beleg:"Ablauf Tamburello/Streetracket 24.06.2026"}
+  ],
+  brief:'<b>Tamburello</b> — Schläger kreisrund, <b>Ø 24–28 cm</b>, engmaschige Nylonmembran, <b>kein Schaft</b> (Griff direkt am Rahmen, Daumen auf der Bespannung): „Ein Wolf im Schafspelz.“ Felder: Indoor 34 × 16 m, Beach 24 × 11 m, Kleinfeld 9,45 × 4,10 m. In der Schule 15/30/45, im Verein Gewinnsätze bis 21 (bei 2:2).'},
 
- {key:"speckbrett",name:"Speckbrett",accent:"#c08457",w:10.97,h:23.77,net:11.885,
-  lines:[[5.485,0,5.485,23.77]],
-  zones:[],
-  hot:[
-   {t:"rect",c:[0,0,10.97,23.77],titel:"Spielfeld",mass:"23,77 × 10,97 m",regel:"Kompletter Tennisplatz — aber ohne T-Linie. Ball: Tennisball. Schläger: Holz mit runden Löchern.",beleg:"Team-Protokoll 29.04.2026; Übersicht Rückschlagspiele"},
-   {t:"line",c:[5.485,0,5.485,23.77],titel:"Mittellinie (keine T-Linie!)",mass:"längs",regel:"Aufschlag diagonal ins gegenüberliegende Feld, hinter der Linie. Es schlägt auf, wer den letzten Ballwechsel verloren hat; bei gerader Punktzahl von rechts. Eine T-Linie gibt es nicht — beliebte Fangfrage.",beleg:"Team-Protokoll 29.04.2026"},
-   {t:"rect",c:[0,0,10.97,11.885],titel:"Herkunft & Zählweise",mass:"2 Sätze bis 21",regel:"Ursprung: Schwarzwald-Region (nicht Münsterland!). In Münster 27 kostenlose Plätze. Sätze bis 21, bei 20:20 weiter bis 2 Punkte Abstand.",beleg:"Team-Protokoll 29.04.2026; Übersicht Rückschlagspiele"}
-  ]}
+ {key:"speckbrett",name:"Speckbrett",accent:"#c08457",w:10.97,h:23.77,
+  field:{titel:"Spielfeld",mass:"23,77 × 10,97 m",regel:"Kompletter Tennisplatz — aber ohne T-Linie. Ball: Tennisball. Schläger: Holz mit runden Löchern.",beleg:"Team-Protokoll 29.04.2026; Übersicht Rückschlagspiele"},
+  net:{y:11.885,titel:"Netz",mass:"—",regel:"Gespielt wird über ein Netz auf dem Tennisplatz. Ein zweiter Aufschlagversuch gibt es nur bei einem Netzroller.",beleg:"Team-Protokoll 29.04.2026"},
+  elems:[
+   {t:"line",c:[5.485,0,5.485,23.77],titel:"Mittellinie — keine T-Linie!",mass:"längs",regel:"Aufschlag diagonal ins gegenüberliegende Feld, hinter der Linie. Es schlägt auf, wer den letzten Ballwechsel verloren hat; bei gerader Punktzahl von rechts. Eine T-Linie gibt es nicht — beliebte Fangfrage.",beleg:"Team-Protokoll 29.04.2026"}
+  ],
+  brief:'<b>Speckbrett</b> — Feld = kompletter Tennisplatz, aber <b>ohne T-Linie</b>. Ursprung: <b>Schwarzwald-Region</b> (nicht Münsterland!). In Münster <b>27 kostenlose Plätze</b>. Sätze bis 21 (bei 20:20 weiter bis 2 Punkte Abstand). Aufschlag diagonal; es schlägt auf, wer den letzten Ballwechsel <b>verloren</b> hat.'}
 ];
 
 (function buildFelder(){
   const svg=$("#feldSvg"), chips=$("#feldChips"), info=$("#feldInfo"); if(!svg||!chips)return;
-  FELDER.forEach((f,i)=>{
+  const SVGNS2="http://www.w3.org/2000/svg";
+  FELDER.forEach(f=>{
     const b=document.createElement("button");
     b.className="feldchip"; b.dataset.key=f.key; b.textContent=f.name;
     b.style.setProperty("--fc",f.accent);
@@ -1849,59 +1856,74 @@ const FELDER=[
     chips.appendChild(b);
   });
 
+  let curF=null, hotList=[];
+
   window.selFeld=function(key){
     const f=FELDER.find(x=>x.key===key); if(!f)return;
+    curF=f; hotList=[];
     $$("#feldChips .feldchip").forEach(c=>c.classList.toggle("on",c.dataset.key===key));
     svg.style.setProperty("--fc",f.accent);
     while(svg.firstChild)svg.removeChild(svg.firstChild);
 
-    const BOX_W=320,BOX_H=460,PAD=34;
-    const availW=BOX_W-2*PAD, availH=BOX_H-2*PAD;
-    const s=Math.min(availW/f.w, availH/f.h);
+    const BOX_W=320,BOX_H=460,PAD=36;
+    const s=Math.min((BOX_W-2*PAD)/f.w, (BOX_H-2*PAD)/f.h);
     const fw=f.w*s, fh=f.h*s, ox=(BOX_W-fw)/2, oy=(BOX_H-fh)/2;
     const X=m=>ox+m*s, Y=m=>oy+m*s;
 
     svg.appendChild(el("rect",{x:0,y:0,width:BOX_W,height:BOX_H,rx:12,fill:"#0c130c"}));
-    // Court-Fläche in Spielfarbe getönt
-    svg.appendChild(el("rect",{x:ox,y:oy,width:fw,height:fh,rx:4,fill:f.accent,"fill-opacity":".16",stroke:f.accent,"stroke-width":2,"stroke-opacity":".85"}));
-    // Glaswände (Padel)
-    if(f.walls) svg.appendChild(el("rect",{x:ox-5,y:oy-5,width:fw+10,height:fh+10,rx:4,fill:"none",stroke:f.accent,"stroke-width":3,"stroke-opacity":".45","stroke-dasharray":"2 4"}));
-    // Zonen
-    (f.zones||[]).forEach(z=>{
-      svg.appendChild(el("rect",{x:X(z.x),y:Y(z.y),width:z.w*s,height:z.h*s,fill:f.accent,"fill-opacity":".28"}));
-      if(z.label){ const t=el("text",{x:X(z.x)+z.w*s/2,y:Y(z.y)+z.h*s/2+3,"text-anchor":"middle","font-size":"9",fill:"#fff","font-family":"Barlow","opacity":".85","pointer-events":"none"}); t.textContent=z.label; svg.appendChild(t); }
-    });
-    // Linien
-    (f.lines||[]).forEach(l=>svg.appendChild(el("line",{x1:X(l[0]),y1:Y(l[1]),x2:X(l[2]),y2:Y(l[3]),stroke:"#fff","stroke-width":1.4,opacity:".85"})));
-    // Netz
-    if(f.net!=null) svg.appendChild(el("rect",{x:ox-6,y:Y(f.net)-2.5,width:fw+12,height:5,rx:2,fill:"#e6edea",opacity:".92"}));
 
-    // Klickbare Hotspots
-    f.hot.forEach((h,idx)=>{
-      let node;
-      if(h.t==="line"){
-        node=el("line",{x1:X(h.c[0]),y1:Y(h.c[1]),x2:X(h.c[2]),y2:Y(h.c[3]),class:"fhit-line"});
-      }else{
-        node=el("rect",{x:X(h.c[0]),y:Y(h.c[1]),width:h.c[2]*s,height:h.c[3]*s,class:"fhit"});
-      }
-      node.dataset.idx=idx;
-      node.addEventListener("click",()=>showFeldInfo(f,idx));
-      svg.appendChild(node);
+    // 1) Feldfläche (klickbar)
+    const field=el("rect",{x:ox,y:oy,width:fw,height:fh,rx:4,fill:f.accent,"fill-opacity":".15",stroke:f.accent,"stroke-width":2,"stroke-opacity":".85",class:"fhit"});
+    reg(field,f.field);
+    svg.appendChild(field);
+
+    // 2) Glaswände (Padel) — klickbar
+    if(f.walls){
+      const wall=el("rect",{x:ox-6,y:oy-6,width:fw+12,height:fh+12,rx:5,fill:"none",stroke:f.accent,"stroke-width":5,"stroke-opacity":".6",class:"fhit-line"});
+      reg(wall,f.walls);
+      svg.appendChild(wall);
+    }
+
+    // 3) Zonen (klickbar)
+    (f.elems||[]).filter(e=>e.t==="zone").forEach(z=>{
+      const r=el("rect",{x:X(z.c[0]),y:Y(z.c[1]),width:z.c[2]*s,height:z.c[3]*s,fill:f.accent,"fill-opacity":(z.fill||.28),class:"fhit"});
+      reg(r,z); svg.appendChild(r);
+      if(z.label){const t=el("text",{x:X(z.c[0])+z.c[2]*s/2,y:Y(z.c[1])+z.c[3]*s/2+3,"text-anchor":"middle","font-size":"9",fill:"#fff","font-family":"Barlow",opacity:".9","pointer-events":"none"});t.textContent=z.label;svg.appendChild(t);}
     });
 
-    showFeldInfo(f,0);
+    // 4) Linien (sichtbar + breite Hitbox, klickbar)
+    (f.elems||[]).filter(e=>e.t==="line").forEach(l=>{
+      svg.appendChild(el("line",{x1:X(l.c[0]),y1:Y(l.c[1]),x2:X(l.c[2]),y2:Y(l.c[3]),stroke:"#fff","stroke-width":1.4,opacity:".85","pointer-events":"none"}));
+      const hit=el("line",{x1:X(l.c[0]),y1:Y(l.c[1]),x2:X(l.c[2]),y2:Y(l.c[3]),class:"fhit-line"});
+      reg(hit,l); svg.appendChild(hit);
+    });
+
+    // 5) Netz (sichtbar + Hitbox, klickbar)
+    if(f.net){
+      svg.appendChild(el("rect",{x:ox-6,y:Y(f.net.y)-2.5,width:fw+12,height:5,rx:2,fill:"#e6edea",opacity:".92","pointer-events":"none"}));
+      const hit=el("rect",{x:ox-8,y:Y(f.net.y)-6,width:fw+16,height:12,fill:"rgba(0,0,0,0)",class:"fhit"});
+      reg(hit,f.net); svg.appendChild(hit);
+    }
+
+    // Info-Panel: Hotspot-Bereich + Steckbrief
+    info.style.setProperty("--fc",f.accent);
+    info.innerHTML='<div id="feldHot"></div>'+
+      '<div class="feldbrief"><div class="feldbrief-h">Steckbrief · '+f.name+'</div><p>'+f.brief+'</p>'+
+      (f.detail?'<button class="btn sm" style="margin-top:12px" onclick="go(\''+f.detail+'\')">Vollständiger Court →</button>':'')+'</div>';
+
+    showHot(0);
+
+    function reg(node,data){ node.__data=data; node.__i=hotList.length; hotList.push({node,data}); node.addEventListener("click",()=>showHot(node.__i)); }
   };
 
-  function showFeldInfo(f,idx){
-    $$("#feldSvg .fhit,#feldSvg .fhit-line").forEach((n,i)=>n.classList.toggle("sel",i===idx));
-    const h=f.hot[idx]; if(!info||!h)return;
-    info.style.setProperty("--fc",f.accent);
-    info.innerHTML='<span class="feldtag">'+f.name+'</span>'+
-      '<span class="num" style="color:var(--fc)">'+h.mass+'</span>'+
-      '<h3 class="head" style="font-size:1.05rem;margin-bottom:10px">'+h.titel+'</h3>'+
-      '<p style="color:rgba(255,255,255,.82);font-size:.92rem">'+h.regel+'</p>'+
-      (f.detail?'<div class="btnrow"><button class="btn sm" onclick="go(\''+f.detail+'\')">Vollständiger Court →</button></div>':'')+
-      '<div class="beleg"><b>Beleg:</b> '+h.beleg+'</div>';
+  function showHot(i){
+    hotList.forEach((h,j)=>h.node.classList.toggle("sel",j===i));
+    const d=hotList[i]&&hotList[i].data; const hot=$("#feldHot"); if(!d||!hot)return;
+    hot.innerHTML='<span class="feldtag">'+curF.name+'</span>'+
+      '<span class="num" style="color:var(--fc)">'+d.mass+'</span>'+
+      '<h3 class="head" style="font-size:1.05rem;margin-bottom:9px">'+d.titel+'</h3>'+
+      '<p style="color:rgba(255,255,255,.82);font-size:.9rem">'+d.regel+'</p>'+
+      '<div class="beleg"><b>Beleg:</b> '+d.beleg+'</div>';
   }
 
   selFeld("padel");
