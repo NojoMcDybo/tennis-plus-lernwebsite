@@ -309,6 +309,7 @@ tr.exam td{color:var(--accent)}
 .feldbrief-h{font-family:'Archivo',sans-serif;font-weight:700;font-size:.66rem;letter-spacing:.14em;
   text-transform:uppercase;color:var(--fc);margin-bottom:8px}
 .feldbrief p{color:rgba(255,255,255,.8);font-size:.9rem;line-height:1.55}
+.feldhint{color:var(--muted);font-size:.9rem;line-height:1.55;margin-top:4px}
 #feldInfo .num{font-size:1.7rem;display:block;margin-bottom:4px}
 .feldtag{display:inline-block;font-family:'Archivo',sans-serif;font-weight:700;font-size:.62rem;
   letter-spacing:.14em;text-transform:uppercase;color:#0b1400;background:var(--fc);
@@ -1911,14 +1912,20 @@ const FELDER=[
       '<div class="feldbrief"><div class="feldbrief-h">Steckbrief · '+f.name+'</div><p>'+f.brief+'</p>'+
       (f.detail?'<button class="btn sm" style="margin-top:12px" onclick="go(\''+f.detail+'\')">Vollständiger Court →</button>':'')+'</div>';
 
-    showHot(0);
+    showHot(-1);
 
     function reg(node,data){ node.__data=data; node.__i=hotList.length; hotList.push({node,data}); node.addEventListener("click",()=>showHot(node.__i)); }
   };
 
   function showHot(i){
     hotList.forEach((h,j)=>h.node.classList.toggle("sel",j===i));
-    const d=hotList[i]&&hotList[i].data; const hot=$("#feldHot"); if(!d||!hot)return;
+    const hot=$("#feldHot"); if(!hot)return;
+    const d=hotList[i]&&hotList[i].data;
+    if(!d){
+      hot.innerHTML='<span class="feldtag">'+curF.name+'</span>'+
+        '<p class="feldhint">Tippe im Feld auf eine Linie, das Netz, eine Zone oder die Fläche — Maß, Regel und Beleg erscheinen hier.</p>';
+      return;
+    }
     hot.innerHTML='<span class="feldtag">'+curF.name+'</span>'+
       '<span class="num" style="color:var(--fc)">'+d.mass+'</span>'+
       '<h3 class="head" style="font-size:1.05rem;margin-bottom:9px">'+d.titel+'</h3>'+
